@@ -21,4 +21,4 @@ pnpm build      # static files in dist/ (works from any subfolder)
 Click or tap cards to select. Keys in a round: `1`-`9` select, `Enter` play, `D` discard, `R`/`S` sort, `Esc` clear. Drag Jokers (and hand cards) left or right to reorder; tap a Joker for details, Sell and move buttons.
 
 ## Portraits
-Add `public/portraits/<joker id>.png` and list the id in `src/data/portraits.json`.
+Source PNGs are in `docs/suiko-characters/`. Run `python3 scripts/portraits.py` (needs Pillow) to rebuild `public/portraits/*.webp` and `src/data/portraits.json`. File names that differ from the Joker id are mapped in the script's `ALIAS` table.

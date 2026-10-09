@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Edition } from '../../engine/cards';
   import { JOKERS } from '../../engine/data';
-  import portraits from '../../data/portraits.json';
   import { initials, hue } from '../format';
+  import { portraitUrl } from '../portraits';
 
   interface Props {
     id: string;
@@ -23,11 +23,10 @@
     silhouette = false, pinned = false, badge = null, onclick, onhover,
   }: Props = $props();
 
-  const PORTRAITS = new Set(portraits as string[]);
   const d = $derived(JOKERS[id]);
   const rarity = $derived(d?.rarity ?? 'C');
   const h = $derived(hue(id));
-  const src = $derived(PORTRAITS.has(id) ? `${import.meta.env.BASE_URL}portraits/${id}.png` : null);
+  const src = $derived(portraitUrl(id));
   const label = $derived(silhouette ? 'Undiscovered Joker' : `${d?.name}. ${d?.text}`);
 </script>
 
@@ -50,7 +49,7 @@
     {#if silhouette}
       <span class="mono">?</span>
     {:else if src}
-      <img {src} alt="" draggable="false" />
+      <img {src} alt="" draggable="false" loading="lazy" decoding="async" />
     {:else}
       <span class="mono">{initials(d?.name ?? '?')}</span>
     {/if}
@@ -122,10 +121,25 @@
       #222;
     border: 1px solid rgba(255, 255, 255, 0.12);
   }
+  .art {
+    position: relative;
+  }
+  /* Art is trimmed to its visible part (about 7:8). The card window is taller,
+     so cover-fit keeps the face (upper middle) in view. */
   .art img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 50% 20%;
+    pointer-events: none;
+  }
+  .art:has(img)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 -18px 16px -12px rgba(0, 0, 0, 0.55);
     pointer-events: none;
   }
   .mono {

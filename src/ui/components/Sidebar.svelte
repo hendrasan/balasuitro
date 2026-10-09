@@ -7,6 +7,7 @@
   import { HAND_INFO } from '../../engine/hands';
   import { currentEvent } from '../anim';
   import { num, mult, potch } from '../format';
+  import { portraitUrl } from '../portraits';
 
   interface Props {
     onmodal: (m: 'levels' | 'deck' | 'plan' | 'tags') => void;
@@ -37,6 +38,7 @@
 
 <aside class="side panel">
   <div class="blind" class:boss={!!boss} class:finale={boss?.finale}>
+    {#if boss && portraitUrl(boss.id)}<img class="face" src={portraitUrl(boss.id)} alt="" />{/if}
     <div class="bname display">{boss ? boss.name : BLIND_NAMES[run.blindIndex]}</div>
     {#if boss}<div class="btitle">{boss.title}</div>{/if}
     {#if boss && (inRound || run.phase === 'blind')}<div class="btext">{boss.text}</div>{/if}
@@ -110,6 +112,17 @@
   }
   .bname {
     font-size: 20px;
+  }
+  .face {
+    float: left;
+    width: 56px;
+    height: 56px;
+    margin-right: 8px;
+    object-fit: cover;
+    object-position: 50% 20%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    background: rgba(0, 0, 0, 0.3);
   }
   .btitle {
     font-size: 11px;

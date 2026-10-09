@@ -5,6 +5,7 @@
   import { CONFIG } from '../../../engine/config';
   import { currentBossId } from '../../../engine/run';
   import { num, potch } from '../../format';
+  import { portraitUrl } from '../../portraits';
 
   const run = $derived(game.view!);
   const bossId = $derived(currentBossId(run));
@@ -32,6 +33,9 @@
       {@const past = run.blindIndex > i}
       <div class="blind panel" class:current class:past class:boss={isBoss} class:finale={isBoss && boss.finale}>
         <div class="kind">{BLIND_NAMES[i]}</div>
+        {#if isBoss && portraitUrl(bossId)}
+          <img class="face" src={portraitUrl(bossId)} alt="" />
+        {/if}
         <div class="name display">{isBoss ? boss.name : i === 0 ? 'Skirmish' : 'Field Battle'}</div>
         {#if isBoss}
           <div class="title">{boss.title}</div>
@@ -114,6 +118,20 @@
   .blind.finale {
     background: linear-gradient(180deg, rgba(74, 29, 94, 0.95), rgba(20, 8, 28, 0.95));
     box-shadow: 0 0 24px rgba(233, 185, 73, 0.3);
+  }
+  .face {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    object-position: 50% 20%;
+    border-radius: 50%;
+    border: 2px solid #c25a62;
+    background: radial-gradient(circle, #5a2430, #1c0a10);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  }
+  .finale .face {
+    border-color: var(--gold);
+    box-shadow: 0 0 18px rgba(233, 185, 73, 0.45);
   }
   .kind {
     font-size: 11px;

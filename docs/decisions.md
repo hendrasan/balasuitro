@@ -53,7 +53,7 @@ Per-round caps (Meg, Mercenary tag, Lorelai, Mage tier 4, Gambler tier 4) reset 
 - An empty hand with an empty draw pile ends the run (no softlock).
 
 ## UI
-- Portraits: put PNG files in `public/portraits/<joker id>.png` and add the id to `src/data/portraits.json`. Ids not listed use a monogram, so there are no 404 requests.
+- Portraits: source art is `docs/suiko-characters/*.png` (400x400, the art fills only the left ~350 px). `scripts/portraits.py` trims each image to its visible part, scales it to 256 px high and writes `public/portraits/<id>.webp` (Joker and boss ids) plus `src/data/portraits.json`. Cards show the art with cover-fit, anchored on the upper middle (the face). Ids not listed use a monogram, so there are no 404 requests. Beast Rune and Zombie Horde have no art yet.
 - Sound uses ZzFX, off by default, loaded only after the player turns it on.
 - After a refresh the app opens the run in progress.
 - Phase 2 hooks: `profile.castle` (round-tripped), `buildRunModifiers()` in the store, `RunModifiers` read by the engine, disabled "Castle" menu entry.
