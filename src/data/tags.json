@@ -1,0 +1,20 @@
+[
+ {"id":"kyaro","name":"Kyaro","tiers":[{"count":2,"text":"+1 hand each round","params":{"hands":1}},{"count":4,"text":"X1.5 Mult on the final hand of the round","params":{"x":1.5}}]},
+ {"id":"beast","name":"Beast","tiers":[{"count":2,"text":"+1 discard each round","params":{"discards":1}},{"count":4,"text":"Beast Jokers' own effects +25%","params":{"pct":25}}]},
+ {"id":"circus","name":"Circus","tiers":[{"count":2,"text":"+2 Potch at end of round","params":{"money":2}},{"count":3,"text":"X1.5 Mult","params":{"x":1.5}}]},
+ {"id":"highland","name":"Highland","tiers":[{"count":2,"text":"+15 Mult","params":{"mult":15}},{"count":4,"text":"X1.5 Mult","params":{"x":1.5}}]},
+ {"id":"mercenary","name":"Mercenary","tiers":[{"count":2,"text":"Earn 1 Potch per hand played (max 4 per round)","params":{"money":1,"max":4}},{"count":4,"text":"X1.5 Mult on the first hand of the round","params":{"x":1.5}}]},
+ {"id":"ninja","name":"Ninja","tiers":[{"count":2,"text":"Retrigger the first played card","params":{"retriggers":1}},{"count":4,"text":"Also retrigger the last played card","params":{"retriggers":1}}]},
+ {"id":"gambler","name":"Gambler","tiers":[{"count":2,"text":"1 in 4 chance of +4 Potch each hand","params":{"num":1,"den":4,"money":4}},{"count":4,"text":"Once per round, reroll a failed random Joker effect","params":{}}]},
+ {"id":"merchant","name":"Merchant","tiers":[{"count":2,"text":"Shop prices -10%","params":{"pct":10}},{"count":4,"text":"Interest cap +10 Potch","params":{"cap":10}}]},
+ {"id":"mage","name":"Mage","tiers":[{"count":2,"text":"+1 consumable slot","params":{"slots":1}},{"count":4,"text":"The first Rune used each round is duplicated","params":{}}]},
+ {"id":"strategist","name":"Strategist","tiers":[{"count":2,"text":"Preview the top 3 cards of your deck at round start, and X1.3 Mult","params":{"preview":3,"x":1.3}}]},
+ {"id":"archer","name":"Archer","tiers":[{"count":2,"text":"+20 Chips per hand remaining","params":{"chipsPerHand":20}}]},
+ {"id":"swordsman","name":"Swordsman","tiers":[{"count":2,"text":"+10 Mult on the first hand of the round","params":{"mult":10}},{"count":4,"text":"That bonus becomes X1.5 Mult","params":{"x":1.5}}]},
+ {"id":"craftsman","name":"Craftsman","tiers":[{"count":2,"text":"First scoring card each hand permanently gains +5 Chips","params":{"chips":5}},{"count":4,"text":"Upgrade a random hand type after each Boss","params":{"levels":1}}]},
+ {"id":"kobold","name":"Kobold","tiers":[{"count":2,"text":"+30 Chips","params":{"chips":30}},{"count":3,"text":"X1.5 Mult on hands of 3 or fewer cards","params":{"x":1.5,"maxCards":3}}]},
+ {"id":"troupe","name":"Troupe","tiers":[{"count":2,"text":"+2 Mult per Joker owned","params":{"multPerJoker":2}},{"count":4,"text":"X1.4 Mult","params":{"x":1.4}}]},
+ {"id":"vampire_hunter","name":"Vampire Hunter","tiers":[{"count":2,"text":"+2 Potch after each Boss","params":{"money":2}},{"count":4,"text":"X1.5 Mult in Boss Blinds","params":{"x":1.5}},{"count":6,"text":"X2 Mult in Boss Blinds (replaces the 4 bonus)","params":{"x":2}}]},
+ {"id":"brawler","name":"Brawler","tiers":[{"count":2,"text":"+30 Chips on 5-card hands","params":{"chips":30}},{"count":4,"text":"X1.4 Mult on 5-card hands","params":{"x":1.4}}]},
+ {"id":"matilda","name":"Matilda","tiers":[{"count":2,"text":"Scoring Face cards give +10 Chips","params":{"chips":10}},{"count":4,"text":"X1.4 Mult if hand contains a Face card","params":{"x":1.4}}]}
+]

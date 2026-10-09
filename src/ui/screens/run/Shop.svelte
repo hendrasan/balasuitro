@@ -1,0 +1,208 @@
+<script lang="ts">
+  import { game } from '../../../stores/game.svelte';
+  import { CONSUMABLES } from '../../../engine/consumables';
+  import { itemPrice, packPrice, rerollPrice, voucherPrice, PACK_NAMES, packShape } from '../../../engine/shop';
+  import { VOUCHERS } from '../../../engine/vouchers';
+  import { JOKERS } from '../../../engine/data';
+  import { inspect } from '../../inspect.svelte';
+  import { richText, potch } from '../../format';
+  import JokerCard from '../../components/JokerCard.svelte';
+  import ConsumableCard from '../../components/ConsumableCard.svelte';
+
+  const run = $derived(game.view!);
+  const shop = $derived(run.shop!);
+  const p = $derived(game.passives!);
+  const voucher = $derived(run.anteVoucher ? VOUCHERS[run.anteVoucher] : null);
+
+  function buy(i: number) {
+    if (game.dispatch({ type: 'buyCard', index: i })) {
+      game.sound('buy');
+      inspect.close();
+    }
+  }
+</script>
+
+<div class="shop">
+  <div class="top">
+    <h2 class="display">Merchant's Camp</h2>
+    <div class="actions">
+      <button class="btn primary" type="button" onclick={() => game.dispatch({ type: 'leaveShop' })}>Next battle ▸</button>
+      <button class="btn" type="button" disabled={run.money < rerollPrice(shop, p)} onclick={() => game.dispatch({ type: 'reroll' })}>
+        Reroll {potch(rerollPrice(shop, p))}
+      </button>
+    </div>
+  </div>
+
+  <div class="items">
+    {#each shop.cards as it, i (i)}
+      <div class="item">
+        {#if it}
+          {#if it.kind === 'joker'}
+            <JokerCard
+              id={it.joker.id}
+              edition={it.joker.edition}
+              pinned={inspect.pinned?.kind === 'jokerData' && inspect.pinned.id === it.joker.id}
+              onclick={() => inspect.pin({ kind: 'jokerData', id: it.joker.id, edition: it.joker.edition, where: 'shop' })}
+              onhover={(on) => (inspect.hover = on ? { kind: 'jokerData', id: it.joker.id, edition: it.joker.edition, where: 'shop' } : null)}
+            />
+            <div class="desc">{@html richText(JOKERS[it.joker.id].text)}</div>
+          {:else}
+            <ConsumableCard
+              id={it.cons.id}
+              onclick={() => inspect.pin({ kind: 'consData', id: it.cons.id })}
+              onhover={(on) => (inspect.hover = on ? { kind: 'consData', id: it.cons.id } : null)}
+            />
+            <div class="desc">{@html richText(CONSUMABLES[it.cons.id].text)}</div>
+          {/if}
+          <button class="btn small gold" type="button" disabled={run.money < itemPrice(it, p)} onclick={() => buy(i)}>
+            Buy {itemPrice(it, p) === 0 ? 'FREE' : potch(itemPrice(it, p))}
+          </button>
+        {:else}
+          <div class="sold">Sold</div>
+        {/if}
+      </div>
+    {/each}
+  </div>
+
+  <div class="lower">
+    <div class="voucher panel">
+      <h3 class="display">Blacksmith</h3>
+      {#if voucher}
+        <b>{voucher.name}</b>
+        <p class="muted">{voucher.text}</p>
+        <button class="btn small gold" type="button" disabled={run.money < voucherPrice(p)} onclick={() => game.dispatch({ type: 'buyVoucher' })}>
+          Forge {potch(voucherPrice(p))}
+        </button>
+      {:else}
+        <p class="muted">Come back next Chapter for a new upgrade.</p>
+      {/if}
+      {#if run.vouchers.length}
+        <p class="owned">Owned: {run.vouchers.map((v) => VOUCHERS[v].name).join(', ')}</p>
+      {/if}
+    </div>
+    <div class="packs">
+      {#each shop.packs as pk, i (i)}
+        <div class="pack panel" class:gone={!pk}>
+          {#if pk}
+            {@const shape = packShape(pk.type, pk.size)}
+            <div class="ptype t-{pk.type} display">{pk.size === 'normal' ? '' : pk.size === 'jumbo' ? 'Jumbo ' : 'Mega '}{PACK_NAMES[pk.type]}</div>
+            <div class="muted small">Choose {shape[1]} of {shape[0]}</div>
+            <button class="btn small gold" type="button" disabled={run.money < packPrice(pk, p)} onclick={() => game.dispatch({ type: 'buyPack', index: i })}>
+              Open {packPrice(pk, p) === 0 ? 'FREE' : potch(packPrice(pk, p))}
+            </button>
+          {:else}
+            <div class="muted">Opened</div>
+          {/if}
+        </div>
+      {/each}
+    </div>
+  </div>
+</div>
+
+<style>
+  .shop {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  h2 {
+    margin: 0;
+    color: var(--gold);
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+  .items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+  }
+  .item {
+    width: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .desc {
+    font-size: 12px;
+    text-align: center;
+    min-height: 3em;
+  }
+  .sold {
+    height: var(--joker-h);
+    display: grid;
+    place-items: center;
+    color: var(--ink-faint);
+  }
+  .lower {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 12px;
+  }
+  @media (max-width: 760px) {
+    .lower {
+      grid-template-columns: 1fr;
+    }
+    .item {
+      width: 46%;
+    }
+  }
+  .voucher {
+    padding: 12px;
+  }
+  .voucher h3 {
+    margin: 0 0 6px;
+    color: var(--gold);
+    font-size: 16px;
+  }
+  .voucher p {
+    margin: 4px 0 8px;
+    font-size: 13px;
+  }
+  .owned {
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+  .packs {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .pack {
+    flex: 1 1 140px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+  .pack.gone {
+    opacity: 0.4;
+  }
+  .ptype {
+    font-size: 15px;
+  }
+  .t-rune { color: #8fb4ff; }
+  .t-forging { color: #f0a85a; }
+  .t-true { color: #d79cff; }
+  .t-star { color: var(--gold); }
+  .t-standard { color: var(--parch); }
+  .small {
+    font-size: 12px;
+  }
+</style>

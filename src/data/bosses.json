@@ -1,0 +1,15 @@
+[
+ {"id":"luca_blight","name":"Luca Blight","title":"The Mad Prince","mechanic":"needle","text":"Only 1 hand this round","targetMult":1,"minAnte":4,"fixed":true},
+ {"id":"neclord","name":"Neclord","title":"Vampire Lord of Tinto","mechanic":"plant","text":"All Face cards are debuffed","targetMult":2,"minAnte":4,"fixed":true},
+ {"id":"jowy_boss","name":"Jowy Atreides","title":"King of Highland - THE FINALE","mechanic":"crimson","text":"A random Joker is debuffed each hand","targetMult":2,"minAnte":8,"fixed":true,"finale":true},
+ {"id":"solon_jhee","name":"Solon Jhee","title":"Highland Commander","mechanic":"hook","text":"Discards 2 random cards held in hand after each hand played","targetMult":2,"minAnte":1},
+ {"id":"rowd","name":"Rowd","title":"Unicorn Brigade Captain","mechanic":"water","text":"Start with 0 discards","targetMult":2,"minAnte":2},
+ {"id":"gorudo","name":"Lord Gorudo","title":"Greedy Lord of Matilda","mechanic":"tooth","text":"Lose 1 Potch per card played","targetMult":2,"minAnte":3},
+ {"id":"leon","name":"Leon Silverberg","title":"Highland Strategist","mechanic":"eye","text":"No repeat hand types this round","targetMult":2,"minAnte":3},
+ {"id":"yuber","name":"Yuber","title":"The Black Knight","mechanic":"wall","text":"Extra large blind","targetMult":4,"minAnte":2},
+ {"id":"seed","name":"Seed","title":"Highland General","mechanic":"goad","text":"All Spade cards are debuffed","targetMult":2,"minAnte":1},
+ {"id":"culgan","name":"Culgan","title":"Highland General","mechanic":"club","text":"All Club cards are debuffed","targetMult":2,"minAnte":1},
+ {"id":"beast_rune","name":"Beast Rune","title":"True Rune Incarnate","mechanic":"arm","text":"Decrease the level of the played poker hand","targetMult":2,"minAnte":2},
+ {"id":"zombie_horde","name":"Zombie Horde","title":"Neclord's Servants","mechanic":"flint","text":"Base Chips and Mult are halved","targetMult":2,"minAnte":2},
+ {"id":"agares","name":"Agares Blight","title":"King of Highland","mechanic":"mouth","text":"Play only 1 hand type this round","targetMult":2,"minAnte":2}
+]

@@ -1,0 +1,204 @@
+:root {
+  --bg-0: #070a14;
+  --bg-1: #0e1426;
+  --bg-2: #161f38;
+  --panel: rgba(18, 25, 46, 0.86);
+  --panel-2: rgba(28, 37, 66, 0.9);
+  --line: rgba(212, 166, 74, 0.35);
+  --line-strong: #d4a64a;
+  --gold: #e3b85c;
+  --gold-dim: #9c7a36;
+  --ink: #ece4cf;
+  --ink-dim: #a9a28f;
+  --ink-faint: #6f6a5c;
+  --parch: #f1e6c8;
+  --parch-2: #e2d3ab;
+  --card-ink: #1d2338;
+  --red: #c23a3a;
+  --red-deep: #7d1f25;
+  --blue: #2f7fd8;
+  --blue-deep: #1b4f8c;
+  --green: #4caf6e;
+  --money: #f2c14e;
+  --chips: #3f93f0;
+  --mult: #ec4d4d;
+  --r-common: #8d9bb5;
+  --r-uncommon: #49b383;
+  --r-rare: #d8484f;
+  --r-legendary: #e9b949;
+  --radius: 10px;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --font-display: 'Palatino Linotype', 'Book Antiqua', Palatino, 'URW Palladio L', Georgia, serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --card-w: 72px;
+  --card-h: 100px;
+  --joker-w: 86px;
+  --joker-h: 118px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: dark;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --card-w: 52px;
+    --card-h: 74px;
+    --joker-w: 62px;
+    --joker-h: 88px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--bg-0);
+  background-image:
+    radial-gradient(ellipse at 50% -10%, rgba(116, 38, 44, 0.35), transparent 60%),
+    radial-gradient(ellipse at 10% 110%, rgba(38, 62, 120, 0.35), transparent 55%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 14px),
+    linear-gradient(180deg, var(--bg-1), var(--bg-0));
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--panel-2), var(--bg-1));
+  color: var(--ink);
+  padding: 0.6em 1.1em;
+  min-height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: transform 0.12s var(--ease), filter 0.12s, border-color 0.12s;
+  touch-action: manipulation;
+}
+.btn:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  filter: brightness(1.15);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.btn.primary {
+  background: linear-gradient(180deg, #2c69b8, var(--blue-deep));
+  border-color: #5c9be6;
+}
+.btn.danger {
+  background: linear-gradient(180deg, #b13a3f, var(--red-deep));
+  border-color: #e0666b;
+}
+.btn.gold {
+  background: linear-gradient(180deg, #c99a3f, #7e5a1d);
+  border-color: #f0cf7c;
+  color: #1a1206;
+}
+.btn.small {
+  padding: 0.3em 0.7em;
+  min-height: 34px;
+  font-size: 0.85em;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.t-chips {
+  color: var(--chips);
+}
+.t-mult {
+  color: var(--mult);
+}
+.t-x {
+  color: #fff;
+  background: var(--mult);
+  padding: 0 0.25em;
+  border-radius: 3px;
+}
+.t-money {
+  color: var(--money);
+}
+
+.muted {
+  color: var(--ink-dim);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-system *,
+  .motion-system *::before,
+  .motion-system *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dim);
+  border-radius: 4px;
+}

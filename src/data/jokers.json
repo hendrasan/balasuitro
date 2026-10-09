@@ -1,0 +1,1765 @@
+[
+ {
+  "id": "riou",
+  "num": 1,
+  "name": "Riou",
+  "rarity": "L",
+  "chapter": 0,
+  "tags": [
+   "kyaro"
+  ],
+  "text": "X1 Mult, +X0.02 for every other Joker recruited in your Collection (X3.24 at 113/113)",
+  "bondText": "Nanami; Jowy",
+  "cost": 20,
+  "params": {
+   "xPer": 0.02
+  }
+ },
+ {
+  "id": "jowy_atreides",
+  "num": 2,
+  "name": "Jowy Atreides",
+  "rarity": "L",
+  "chapter": 0,
+  "tags": [
+   "kyaro",
+   "highland"
+  ],
+  "text": "Copies the Joker to its right. If that Joker is Riou: X2 Mult, but Riou is destroyed after the Ante 8 boss",
+  "bondText": "Riou",
+  "cost": 20,
+  "params": {}
+ },
+ {
+  "id": "shu",
+  "num": 3,
+  "name": "Shu",
+  "rarity": "L",
+  "chapter": 0,
+  "tags": [
+   "strategist"
+  ],
+  "text": "X2 Mult. At run start, reveal every Boss Blind effect for the run; reroll one Boss Blind per Ante",
+  "bondText": "Apple",
+  "cost": 20,
+  "params": {
+   "x": 2,
+   "bossRerolls": 1
+  }
+ },
+ {
+  "id": "viki",
+  "num": 4,
+  "name": "Viki",
+  "rarity": "L",
+  "chapter": 0,
+  "tags": [
+   "mage"
+  ],
+  "text": "Each round gets a random effect: +30 Chips / +10 Mult / +$5 / X1.5 Mult. Once per Ante you may teleport back to the previous shop",
+  "bondText": "",
+  "cost": 20,
+  "params": {
+   "chips": 30,
+   "mult": 10,
+   "money": 5,
+   "x": 1.5
+  }
+ },
+ {
+  "id": "luca_blight",
+  "num": 5,
+  "name": "Luca Blight",
+  "rarity": "L",
+  "chapter": 0,
+  "tags": [
+   "highland"
+  ],
+  "text": "X4 Mult. Destroys a random other Joker at end of each round. Cannot be sold",
+  "bondText": "",
+  "cost": 20,
+  "params": {
+   "x": 4
+  },
+  "locked": true,
+  "unsellable": true
+ },
+ {
+  "id": "mukumuku",
+  "num": 6,
+  "name": "Mukumuku",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "kyaro",
+   "beast"
+  ],
+  "text": "+1 discard each round",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "discards": 1
+  }
+ },
+ {
+  "id": "nanami",
+  "num": 7,
+  "name": "Nanami",
+  "rarity": "U",
+  "chapter": 1,
+  "tags": [
+   "kyaro",
+   "brawler"
+  ],
+  "text": "+10 Mult if hand contains a Pair",
+  "bondText": "Riou: +1 hand each round",
+  "cost": 6,
+  "params": {
+   "mult": 10
+  }
+ },
+ {
+  "id": "gengen",
+  "num": 8,
+  "name": "Gengen",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "kobold"
+  ],
+  "text": "+30 Chips if 3 or fewer cards are played",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 30,
+   "maxCards": 3
+  }
+ },
+ {
+  "id": "rikimaru",
+  "num": 9,
+  "name": "Rikimaru",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "swordsman"
+  ],
+  "text": "+8 Mult. Lose $1 at end of round (always hungry)",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 8,
+   "upkeep": 1
+  }
+ },
+ {
+  "id": "millie",
+  "num": 10,
+  "name": "Millie",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [],
+  "text": "Earn $1 per Beast Joker owned at end of round",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "perBeast": 1
+  }
+ },
+ {
+  "id": "kinnison",
+  "num": 11,
+  "name": "Kinnison",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "archer"
+  ],
+  "text": "+15 Chips per hand remaining",
+  "bondText": "Shiro: doubled",
+  "cost": 4,
+  "params": {
+   "chipsPerHand": 15
+  }
+ },
+ {
+  "id": "shiro",
+  "num": 12,
+  "name": "Shiro",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "beast"
+  ],
+  "text": "+4 Mult",
+  "bondText": "Kinnison: doubled",
+  "cost": 4,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "zamza",
+  "num": 13,
+  "name": "Zamza",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [],
+  "text": "Earn $2 at end of round",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "money": 2
+  }
+ },
+ {
+  "id": "apple",
+  "num": 14,
+  "name": "Apple",
+  "rarity": "U",
+  "chapter": 1,
+  "tags": [
+   "strategist"
+  ],
+  "text": "After selecting a Blind, preview the top 3 cards of your deck",
+  "bondText": "Shu: preview 5",
+  "cost": 6,
+  "params": {
+   "preview": 3
+  }
+ },
+ {
+  "id": "hanna",
+  "num": 15,
+  "name": "Hanna",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [],
+  "text": "+10 Chips per card discarded this round",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chipsPerCard": 10
+  }
+ },
+ {
+  "id": "tsai",
+  "num": 16,
+  "name": "Tsai",
+  "rarity": "U",
+  "chapter": 1,
+  "tags": [
+   "craftsman"
+  ],
+  "text": "Upgrade a random hand type by 1 level after each Boss Blind",
+  "bondText": "Tomo",
+  "cost": 6,
+  "params": {
+   "levels": 1
+  }
+ },
+ {
+  "id": "tuta",
+  "num": 17,
+  "name": "Tuta",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "craftsman"
+  ],
+  "text": "First scoring card each hand permanently gains +3 Chips",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 3
+  }
+ },
+ {
+  "id": "anita",
+  "num": 18,
+  "name": "Anita",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [],
+  "text": "+2 Mult each time you leave a shop without buying (resets on Boss)",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 2
+  }
+ },
+ {
+  "id": "templeton",
+  "num": 19,
+  "name": "Templeton",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "mercenary"
+  ],
+  "text": "Scoring Aces give +15 Chips",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 15
+  }
+ },
+ {
+  "id": "gilbert",
+  "num": 20,
+  "name": "Gilbert",
+  "rarity": "U",
+  "chapter": 1,
+  "tags": [
+   "highland"
+  ],
+  "text": "X1.3 Mult if you Skipped a Blind this Ante (defector)",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "x": 1.3
+  }
+ },
+ {
+  "id": "bolgan",
+  "num": 21,
+  "name": "Bolgan",
+  "rarity": "U",
+  "chapter": 1,
+  "tags": [
+   "circus",
+   "brawler"
+  ],
+  "text": "+40 Chips if hand is Three of a Kind or better",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "chips": 40
+  }
+ },
+ {
+  "id": "eilie",
+  "num": 22,
+  "name": "Eilie",
+  "rarity": "C",
+  "chapter": 1,
+  "tags": [
+   "circus"
+  ],
+  "text": "+6 Mult if exactly 2 cards are played",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 6,
+   "cards": 2
+  }
+ },
+ {
+  "id": "rina",
+  "num": 23,
+  "name": "Rina",
+  "rarity": "U",
+  "chapter": 1,
+  "tags": [
+   "circus"
+  ],
+  "text": "Create a Rune card when a Boss Blind is selected (needs room)",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "runes": 1
+  }
+ },
+ {
+  "id": "flik",
+  "num": 24,
+  "name": "Flik",
+  "rarity": "R",
+  "chapter": 2,
+  "tags": [
+   "mercenary",
+   "swordsman"
+  ],
+  "text": "X1.5 Mult on the first hand of each round",
+  "bondText": "Viktor: +1 hand",
+  "cost": 8,
+  "params": {
+   "x": 1.5
+  }
+ },
+ {
+  "id": "viktor",
+  "num": 25,
+  "name": "Viktor",
+  "rarity": "R",
+  "chapter": 2,
+  "tags": [
+   "mercenary",
+   "swordsman"
+  ],
+  "text": "X1.5 Mult on the final hand of each round",
+  "bondText": "Flik: +1 hand",
+  "cost": 8,
+  "params": {
+   "x": 1.5
+  }
+ },
+ {
+  "id": "freed_yamamoto",
+  "num": 26,
+  "name": "Freed Yamamoto",
+  "rarity": "U",
+  "chapter": 2,
+  "tags": [],
+  "text": "Retrigger scoring 10s",
+  "bondText": "Yoshino",
+  "cost": 6,
+  "params": {
+   "rank": 10,
+   "retriggers": 1
+  }
+ },
+ {
+  "id": "yoshino_yamamoto",
+  "num": 27,
+  "name": "Yoshino Yamamoto",
+  "rarity": "U",
+  "chapter": 2,
+  "tags": [],
+  "text": "Scoring Jacks give +10 Chips",
+  "bondText": "Freed: Jacks also give +5 Mult",
+  "cost": 6,
+  "params": {
+   "chips": 10
+  }
+ },
+ {
+  "id": "barbara",
+  "num": 28,
+  "name": "Barbara",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [],
+  "text": "+4 Mult per scoring Heart",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "huan",
+  "num": 29,
+  "name": "Huan",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [],
+  "text": "+4 Mult per scoring Club",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "leona",
+  "num": 30,
+  "name": "Leona",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [],
+  "text": "+4 Mult per scoring Spade",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "luc",
+  "num": 31,
+  "name": "Luc",
+  "rarity": "U",
+  "chapter": 2,
+  "tags": [
+   "mage"
+  ],
+  "text": "+0.1 X Mult per Rune used this run",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "xPer": 0.1
+  }
+ },
+ {
+  "id": "amada",
+  "num": 32,
+  "name": "Amada",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [
+   "swordsman",
+   "brawler"
+  ],
+  "text": "+30 Chips if hand is High Card (duel)",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 30
+  }
+ },
+ {
+  "id": "tai_ho",
+  "num": 33,
+  "name": "Tai Ho",
+  "rarity": "U",
+  "chapter": 2,
+  "tags": [
+   "gambler"
+  ],
+  "text": "Roll a d6 each hand: 1-2 nothing, 3-4 +10 Mult, 5 +20 Mult, 6 X2 Mult (Chinchirorin)",
+  "bondText": "Yam Koo",
+  "cost": 6,
+  "params": {
+   "midMult": 10,
+   "highMult": 20,
+   "x": 2
+  }
+ },
+ {
+  "id": "yam_koo",
+  "num": 34,
+  "name": "Yam Koo",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [
+   "gambler"
+  ],
+  "text": "+2 Mult per $5 owned (max +20)",
+  "bondText": "Tai Ho: +10 Mult more",
+  "cost": 4,
+  "params": {
+   "multPer": 2,
+   "per": 5,
+   "max": 20
+  }
+ },
+ {
+  "id": "oulan",
+  "num": 35,
+  "name": "Oulan",
+  "rarity": "U",
+  "chapter": 2,
+  "tags": [],
+  "text": "Scoring Queens give +8 Mult",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "mult": 8
+  }
+ },
+ {
+  "id": "richmond",
+  "num": 36,
+  "name": "Richmond",
+  "rarity": "U",
+  "chapter": 2,
+  "tags": [
+   "gambler"
+  ],
+  "text": "Coin flip each hand: 50% X1.8 Mult, otherwise nothing",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "num": 1,
+   "den": 2,
+   "x": 1.8
+  }
+ },
+ {
+  "id": "alex",
+  "num": 37,
+  "name": "Alex",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [
+   "merchant"
+  ],
+  "text": "Shop rerolls cost $1 less",
+  "bondText": "Hilda: both earn +$2 per round",
+  "cost": 4,
+  "params": {
+   "rerollMinus": 1
+  }
+ },
+ {
+  "id": "hilda",
+  "num": 38,
+  "name": "Hilda",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [
+   "merchant"
+  ],
+  "text": "Earn $1 each time you reroll the shop",
+  "bondText": "Alex",
+  "cost": 4,
+  "params": {
+   "money": 1
+  }
+ },
+ {
+  "id": "adlai",
+  "num": 39,
+  "name": "Adlai",
+  "rarity": "C",
+  "chapter": 2,
+  "tags": [],
+  "text": "Earn $3 if you win a Blind using only 1 hand",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "money": 3
+  }
+ },
+ {
+  "id": "clive",
+  "num": 40,
+  "name": "Clive",
+  "rarity": "R",
+  "chapter": 2,
+  "tags": [
+   "archer"
+  ],
+  "text": "Final hand of the round: X2 Mult. If it wins the Blind, earn $5",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 2,
+   "money": 5
+  }
+ },
+ {
+  "id": "taki",
+  "num": 41,
+  "name": "Taki",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "+12 Mult if hand contains a Straight",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 12
+  }
+ },
+ {
+  "id": "hans",
+  "num": 42,
+  "name": "Hans",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [
+   "merchant"
+  ],
+  "text": "Jokers in the shop cost $1 less (min $1)",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "minus": 1
+  }
+ },
+ {
+  "id": "tetsu",
+  "num": 43,
+  "name": "Tetsu",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [
+   "brawler"
+  ],
+  "text": "+6 Mult on 5-card hands",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 6
+  }
+ },
+ {
+  "id": "chaco",
+  "num": 44,
+  "name": "Chaco",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "+20 Chips",
+  "bondText": "Trio: Fitcher, Ridley",
+  "cost": 4,
+  "params": {
+   "chips": 20
+  }
+ },
+ {
+  "id": "fitcher",
+  "num": 45,
+  "name": "Fitcher",
+  "rarity": "U",
+  "chapter": 3,
+  "tags": [
+   "merchant"
+  ],
+  "text": "Earn $1 per Joker owned at end of round (max $6)",
+  "bondText": "Trio",
+  "cost": 6,
+  "params": {
+   "perJoker": 1,
+   "max": 6
+  }
+ },
+ {
+  "id": "ridley_wizen",
+  "num": 46,
+  "name": "Ridley Wizen",
+  "rarity": "U",
+  "chapter": 3,
+  "tags": [],
+  "text": "X1.5 Mult on Pair hands",
+  "bondText": "Trio: all three adjacent X1.3. Boris: X1.4",
+  "cost": 6,
+  "params": {
+   "x": 1.5
+  }
+ },
+ {
+  "id": "stallion",
+  "num": 47,
+  "name": "Stallion",
+  "rarity": "U",
+  "chapter": 3,
+  "tags": [],
+  "text": "+1 hand each round. Earn $3 if you used 0 discards last round",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "hands": 1,
+   "money": 3
+  }
+ },
+ {
+  "id": "hai_yo",
+  "num": 48,
+  "name": "Hai Yo",
+  "rarity": "U",
+  "chapter": 3,
+  "tags": [],
+  "text": "Cook: end of round, +$2 and +1 hand next round if you skipped no Blind",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "money": 2,
+   "hands": 1
+  }
+ },
+ {
+  "id": "shilo",
+  "num": 49,
+  "name": "Shilo",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [
+   "gambler"
+  ],
+  "text": "1 in 3 chance for +$5 each hand (Chinchirorin)",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "num": 1,
+   "den": 3,
+   "money": 5
+  }
+ },
+ {
+  "id": "sid",
+  "num": 50,
+  "name": "Sid",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "+15 Chips per scoring 2",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 15
+  }
+ },
+ {
+  "id": "gabocha",
+  "num": 51,
+  "name": "Gabocha",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [
+   "kobold"
+  ],
+  "text": "+20 Chips",
+  "bondText": "Gengen: +20 more",
+  "cost": 4,
+  "params": {
+   "chips": 20
+  }
+ },
+ {
+  "id": "gadget",
+  "num": 52,
+  "name": "Gadget",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "Gains +1 Mult each time you reroll the shop",
+  "bondText": "Meg",
+  "cost": 4,
+  "params": {
+   "mult": 1
+  }
+ },
+ {
+  "id": "meg",
+  "num": 53,
+  "name": "Meg",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "Earn $1 per hand played (max $4)",
+  "bondText": "Gadget: both +$1",
+  "cost": 4,
+  "params": {
+   "money": 1,
+   "max": 4
+  }
+ },
+ {
+  "id": "wakaba",
+  "num": 54,
+  "name": "Wakaba",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "+Mult equal to 2x current Ante",
+  "bondText": "Long Chan Chan",
+  "cost": 4,
+  "params": {
+   "perAnte": 2
+  }
+ },
+ {
+  "id": "tony",
+  "num": 55,
+  "name": "Tony",
+  "rarity": "U",
+  "chapter": 3,
+  "tags": [],
+  "text": "Retrigger the first scoring card twice",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "retriggers": 2
+  }
+ },
+ {
+  "id": "hix",
+  "num": 56,
+  "name": "Hix",
+  "rarity": "U",
+  "chapter": 3,
+  "tags": [],
+  "text": "+4 Mult per enhanced card in played hand",
+  "bondText": "Tengaar: Unite X1.5",
+  "cost": 6,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "tengaar",
+  "num": 57,
+  "name": "Tengaar",
+  "rarity": "U",
+  "chapter": 3,
+  "tags": [],
+  "text": "+30 Chips per enhanced card in played hand",
+  "bondText": "Hix: Unite X1.5",
+  "cost": 6,
+  "params": {
+   "chips": 30
+  }
+ },
+ {
+  "id": "yuzu",
+  "num": 58,
+  "name": "Yuzu",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "+10 Chips per unique rank scored",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 10
+  }
+ },
+ {
+  "id": "emilia",
+  "num": 59,
+  "name": "Emilia",
+  "rarity": "C",
+  "chapter": 3,
+  "tags": [],
+  "text": "+1 consumable slot (Librarian)",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "slots": 1
+  }
+ },
+ {
+  "id": "teresa_wisemail",
+  "num": 60,
+  "name": "Teresa Wisemail",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "matilda"
+  ],
+  "text": "Face cards held in hand give +$1",
+  "bondText": "Trio: Nina, Shin",
+  "cost": 6,
+  "params": {
+   "money": 1
+  }
+ },
+ {
+  "id": "nina",
+  "num": 61,
+  "name": "Nina",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "matilda"
+  ],
+  "text": "+30 Chips per scoring Face card",
+  "bondText": "Trio",
+  "cost": 6,
+  "params": {
+   "chips": 30
+  }
+ },
+ {
+  "id": "shin",
+  "num": 62,
+  "name": "Shin",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "matilda"
+  ],
+  "text": "Prevent the next Joker destruction this Ante. +10 Mult",
+  "bondText": "Trio: all three adjacent X1.4",
+  "cost": 6,
+  "params": {
+   "mult": 10
+  }
+ },
+ {
+  "id": "jeane",
+  "num": 63,
+  "name": "Jeane",
+  "rarity": "R",
+  "chapter": 4,
+  "tags": [
+   "mage"
+  ],
+  "text": "Create a Rune at end of each round if you have room",
+  "bondText": "Raura: create 2 Runes",
+  "cost": 8,
+  "params": {
+   "runes": 1
+  }
+ },
+ {
+  "id": "futch",
+  "num": 64,
+  "name": "Futch",
+  "rarity": "C",
+  "chapter": 4,
+  "tags": [],
+  "text": "Earn $2 per Boss Blind defeated this run (max $8)",
+  "bondText": "Humphrey",
+  "cost": 4,
+  "params": {
+   "perBoss": 2,
+   "max": 8
+  }
+ },
+ {
+  "id": "humphrey_mintz",
+  "num": 65,
+  "name": "Humphrey Mintz",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [],
+  "text": "Selling a Joker gives +$3 extra",
+  "bondText": "Futch",
+  "cost": 6,
+  "params": {
+   "money": 3
+  }
+ },
+ {
+  "id": "camus",
+  "num": 66,
+  "name": "Camus",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "matilda"
+  ],
+  "text": "+15 Chips per scoring Club",
+  "bondText": "Miklotov: also +4 Mult per Club",
+  "cost": 6,
+  "params": {
+   "chips": 15
+  }
+ },
+ {
+  "id": "miklotov",
+  "num": 67,
+  "name": "Miklotov",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "matilda"
+  ],
+  "text": "+15 Chips per scoring Spade",
+  "bondText": "Camus: also +4 Mult per Spade",
+  "cost": 6,
+  "params": {
+   "chips": 15
+  }
+ },
+ {
+  "id": "kiba_windamier",
+  "num": 68,
+  "name": "Kiba Windamier",
+  "rarity": "R",
+  "chapter": 4,
+  "tags": [
+   "highland"
+  ],
+  "text": "X2 Mult if hand is a Flush",
+  "bondText": "Klaus",
+  "cost": 8,
+  "params": {
+   "x": 2
+  }
+ },
+ {
+  "id": "klaus",
+  "num": 69,
+  "name": "Klaus",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "highland"
+  ],
+  "text": "+40 Chips if hand contains a Flush",
+  "bondText": "Kiba: +40 more",
+  "cost": 6,
+  "params": {
+   "chips": 40
+  }
+ },
+ {
+  "id": "badeaux",
+  "num": 70,
+  "name": "Badeaux",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [],
+  "text": "Beast Jokers have their effects increased by 50%",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "pct": 50
+  }
+ },
+ {
+  "id": "connell",
+  "num": 71,
+  "name": "Connell",
+  "rarity": "C",
+  "chapter": 4,
+  "tags": [],
+  "text": "Earn $1 on each Pair played",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "money": 1
+  }
+ },
+ {
+  "id": "ayda",
+  "num": 72,
+  "name": "Ayda",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [],
+  "text": "+25 Chips per Beast Joker owned",
+  "bondText": "Feather",
+  "cost": 6,
+  "params": {
+   "chipsPerBeast": 25
+  }
+ },
+ {
+  "id": "feather",
+  "num": 73,
+  "name": "Feather",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "beast"
+  ],
+  "text": "+1 hand size (griffin)",
+  "bondText": "Ayda",
+  "cost": 6,
+  "params": {
+   "handSize": 1
+  }
+ },
+ {
+  "id": "sigfried",
+  "num": 74,
+  "name": "Sigfried",
+  "rarity": "R",
+  "chapter": 4,
+  "tags": [
+   "beast"
+  ],
+  "text": "X1.8 Mult if all scoring cards are red (unicorn)",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 1.8
+  }
+ },
+ {
+  "id": "abizboah",
+  "num": 75,
+  "name": "Abizboah",
+  "rarity": "R",
+  "chapter": 4,
+  "tags": [
+   "beast"
+  ],
+  "text": "X2 Mult on Four of a Kind or Full House",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 2
+  }
+ },
+ {
+  "id": "lebrante",
+  "num": 76,
+  "name": "Lebrante",
+  "rarity": "C",
+  "chapter": 4,
+  "tags": [
+   "merchant"
+  ],
+  "text": "Joker sell values increase by $1 each round",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "money": 1
+  }
+ },
+ {
+  "id": "simone_verdricci",
+  "num": 77,
+  "name": "Simone Verdricci",
+  "rarity": "C",
+  "chapter": 4,
+  "tags": [],
+  "text": "+4 Mult per scoring Heart",
+  "bondText": "Vincent",
+  "cost": 4,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "kasumi",
+  "num": 78,
+  "name": "Kasumi",
+  "rarity": "U",
+  "chapter": 4,
+  "tags": [
+   "ninja"
+  ],
+  "text": "+1 hand on the first round of each Ante. +8 Mult",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "hands": 1,
+   "mult": 8
+  }
+ },
+ {
+  "id": "valeria",
+  "num": 79,
+  "name": "Valeria",
+  "rarity": "R",
+  "chapter": 4,
+  "tags": [
+   "ninja"
+  ],
+  "text": "X1.5 Mult",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 1.5
+  }
+ },
+ {
+  "id": "sheena",
+  "num": 80,
+  "name": "Sheena",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [],
+  "text": "+2 Mult per Boss Blind defeated this run",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "multPerBoss": 2
+  }
+ },
+ {
+  "id": "lorelai",
+  "num": 81,
+  "name": "Lorelai",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [],
+  "text": "Earn $1 per Rune card used (max $5 per round)",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "money": 1,
+   "max": 5
+  }
+ },
+ {
+  "id": "gordon",
+  "num": 82,
+  "name": "Gordon",
+  "rarity": "U",
+  "chapter": 5,
+  "tags": [
+   "merchant"
+  ],
+  "text": "Interest: $1 per $4 held instead of $5, cap raised to $40",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "per": 4,
+   "cap": 10
+  }
+ },
+ {
+  "id": "mondo",
+  "num": 83,
+  "name": "Mondo",
+  "rarity": "U",
+  "chapter": 5,
+  "tags": [
+   "ninja"
+  ],
+  "text": "Retrigger the first played card",
+  "bondText": "Sasuke: X1.2",
+  "cost": 6,
+  "params": {
+   "retriggers": 1
+  }
+ },
+ {
+  "id": "sasuke",
+  "num": 84,
+  "name": "Sasuke",
+  "rarity": "U",
+  "chapter": 5,
+  "tags": [
+   "ninja"
+  ],
+  "text": "Retrigger the last played card",
+  "bondText": "Mondo: X1.2",
+  "cost": 6,
+  "params": {
+   "retriggers": 1
+  }
+ },
+ {
+  "id": "bob",
+  "num": 85,
+  "name": "Bob",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [
+   "kobold"
+  ],
+  "text": "+3 Mult per 10 Jokers recruited in your Collection",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 3,
+   "per": 10
+  }
+ },
+ {
+  "id": "tomo",
+  "num": 86,
+  "name": "Tomo",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [
+   "craftsman"
+  ],
+  "text": "Stone cards give +20 Chips more",
+  "bondText": "Tsai",
+  "cost": 4,
+  "params": {
+   "chips": 20
+  }
+ },
+ {
+  "id": "annallee",
+  "num": 87,
+  "name": "Annallee",
+  "rarity": "U",
+  "chapter": 5,
+  "tags": [
+   "troupe"
+  ],
+  "text": "+2 Mult per Joker owned",
+  "bondText": "Pico + Alberto: all adjacent X1.3",
+  "cost": 6,
+  "params": {
+   "multPerJoker": 2
+  }
+ },
+ {
+  "id": "killey",
+  "num": 88,
+  "name": "Killey",
+  "rarity": "U",
+  "chapter": 5,
+  "tags": [],
+  "text": "+10 Mult",
+  "bondText": "Alex: +$2 per round",
+  "cost": 6,
+  "params": {
+   "mult": 10
+  }
+ },
+ {
+  "id": "karen",
+  "num": 89,
+  "name": "Karen",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [
+   "troupe"
+  ],
+  "text": "+15 Chips if hand type differs from your previous hand",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 15
+  }
+ },
+ {
+  "id": "maximillian",
+  "num": 90,
+  "name": "Maximillian",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [],
+  "text": "+25 Chips if played hand contains an Ace",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 25
+  }
+ },
+ {
+  "id": "hoi",
+  "num": 91,
+  "name": "Hoi",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [],
+  "text": "+12 Mult if you have 0 discards left",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 12
+  }
+ },
+ {
+  "id": "long_chan_chan",
+  "num": 92,
+  "name": "Long Chan Chan",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [],
+  "text": "+10 Mult on your first discard of the round",
+  "bondText": "Wakaba",
+  "cost": 4,
+  "params": {
+   "mult": 10
+  }
+ },
+ {
+  "id": "tenkou",
+  "num": 93,
+  "name": "Tenkou",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [],
+  "text": "Retrigger scoring 5s",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "rank": 5,
+   "retriggers": 1
+  }
+ },
+ {
+  "id": "raura",
+  "num": 94,
+  "name": "Raura",
+  "rarity": "C",
+  "chapter": 5,
+  "tags": [
+   "mage"
+  ],
+  "text": "Earn $2 each time a Rune is used",
+  "bondText": "Jeane",
+  "cost": 4,
+  "params": {
+   "money": 2
+  }
+ },
+ {
+  "id": "gijimu",
+  "num": 95,
+  "name": "Gijimu",
+  "rarity": "U",
+  "chapter": 6,
+  "tags": [
+   "vampire_hunter"
+  ],
+  "text": "+1 Mult per Boss Blind defeated this run (max +30)",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "multPerBoss": 1,
+   "max": 30
+  }
+ },
+ {
+  "id": "hauser",
+  "num": 96,
+  "name": "Hauser",
+  "rarity": "U",
+  "chapter": 6,
+  "tags": [
+   "vampire_hunter"
+  ],
+  "text": "+30 Chips per Boss Blind defeated this run (max +300)",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "chipsPerBoss": 30,
+   "max": 300
+  }
+ },
+ {
+  "id": "kahn_marley",
+  "num": 97,
+  "name": "Kahn Marley",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [
+   "vampire_hunter"
+  ],
+  "text": "+6 Mult",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "mult": 6
+  }
+ },
+ {
+  "id": "koyu",
+  "num": 98,
+  "name": "Koyu",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [
+   "vampire_hunter"
+  ],
+  "text": "+40 Chips",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chips": 40
+  }
+ },
+ {
+  "id": "lo_wen",
+  "num": 99,
+  "name": "Lo Wen",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [
+   "vampire_hunter"
+  ],
+  "text": "Earn $3 after each Boss Blind",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "money": 3
+  }
+ },
+ {
+  "id": "marlowe",
+  "num": 100,
+  "name": "Marlowe",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [
+   "vampire_hunter"
+  ],
+  "text": "+1 discard per Boss Blind",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "discards": 1
+  }
+ },
+ {
+  "id": "sierra_mikain",
+  "num": 101,
+  "name": "Sierra Mikain",
+  "rarity": "R",
+  "chapter": 6,
+  "tags": [
+   "mage",
+   "vampire_hunter"
+  ],
+  "text": "X2 Mult in Boss Blinds. Runes you use are doubled",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 2
+  }
+ },
+ {
+  "id": "jess",
+  "num": 102,
+  "name": "Jess",
+  "rarity": "U",
+  "chapter": 6,
+  "tags": [
+   "mercenary"
+  ],
+  "text": "Skipping a Blind gives double rewards",
+  "bondText": "",
+  "cost": 6,
+  "params": {}
+ },
+ {
+  "id": "georg_prime",
+  "num": 103,
+  "name": "Georg Prime",
+  "rarity": "R",
+  "chapter": 6,
+  "tags": [],
+  "text": "X4 Mult if exactly 1 card is played (assassin)",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 4
+  }
+ },
+ {
+  "id": "gantetsu",
+  "num": 104,
+  "name": "Gantetsu",
+  "rarity": "U",
+  "chapter": 6,
+  "tags": [
+   "brawler"
+  ],
+  "text": "+Chips equal to 4x the number of cards in your deck",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "chipsPerCard": 4
+  }
+ },
+ {
+  "id": "boris_wizen",
+  "num": 105,
+  "name": "Boris Wizen",
+  "rarity": "U",
+  "chapter": 6,
+  "tags": [],
+  "text": "X1.5 Mult on Two Pair",
+  "bondText": "Ridley: X1.4",
+  "cost": 6,
+  "params": {
+   "x": 1.5
+  }
+ },
+ {
+  "id": "pico",
+  "num": 106,
+  "name": "Pico",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [
+   "troupe"
+  ],
+  "text": "+15 Chips",
+  "bondText": "Annallee trio",
+  "cost": 4,
+  "params": {
+   "chips": 15
+  }
+ },
+ {
+  "id": "alberto",
+  "num": 107,
+  "name": "Alberto",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [
+   "troupe"
+  ],
+  "text": "+4 Mult",
+  "bondText": "Annallee trio",
+  "cost": 4,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "jude",
+  "num": 108,
+  "name": "Jude",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [
+   "craftsman"
+  ],
+  "text": "+30 Chips per Stone card in deck",
+  "bondText": "",
+  "cost": 4,
+  "params": {
+   "chipsPerStone": 30
+  }
+ },
+ {
+  "id": "tessai",
+  "num": 109,
+  "name": "Tessai",
+  "rarity": "U",
+  "chapter": 6,
+  "tags": [
+   "craftsman"
+  ],
+  "text": "Upgrade level of your most played hand every 2 rounds",
+  "bondText": "Viktor",
+  "cost": 6,
+  "params": {
+   "every": 2,
+   "levels": 1
+  }
+ },
+ {
+  "id": "vincent",
+  "num": 110,
+  "name": "Vincent",
+  "rarity": "C",
+  "chapter": 6,
+  "tags": [],
+  "text": "+4 Mult per scoring Diamond",
+  "bondText": "Simone",
+  "cost": 4,
+  "params": {
+   "mult": 4
+  }
+ },
+ {
+  "id": "genshu",
+  "num": 111,
+  "name": "Genshu",
+  "rarity": "U",
+  "chapter": 6,
+  "tags": [
+   "craftsman"
+  ],
+  "text": "+2 Mult per level of your most played hand",
+  "bondText": "",
+  "cost": 6,
+  "params": {
+   "multPerLevel": 2
+  }
+ },
+ {
+  "id": "pesmerga",
+  "num": 112,
+  "name": "Pesmerga",
+  "rarity": "R",
+  "chapter": 6,
+  "tags": [
+   "highland",
+   "swordsman"
+  ],
+  "text": "X1.5 Mult per Boss Blind defeated this run (max X3)",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 1.5,
+   "max": 3
+  }
+ },
+ {
+  "id": "mazus",
+  "num": 113,
+  "name": "Mazus",
+  "rarity": "R",
+  "chapter": 6,
+  "tags": [],
+  "text": "X3 Mult. Only appears once you have recruited 100 Jokers in your Collection",
+  "bondText": "",
+  "cost": 8,
+  "params": {
+   "x": 3
+  },
+  "minCollection": 100
+ }
+]
