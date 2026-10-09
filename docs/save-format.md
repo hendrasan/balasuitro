@@ -5,34 +5,35 @@ All data is stored locally (`localStorage`, behind the `StorageAdapter` interfac
 | Key | Content |
 |---|---|
 | `sod.profile` | `Profile` |
-| `sod.run` | `{ "schemaVersion": 2, "run": RunState }` (absent when no run is active) |
+| `sod.run` | `{ "schemaVersion": 3, "run": RunState }` (absent when no run is active) |
 
 ## Export file
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "exportedAt": "2026-10-09T12:00:00.000Z",
   "profile": { ... },
   "run": { ... } | null
 }
 ```
 
-### Profile (v2)
+### Profile (v3)
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "collection": { "seen": ["joker ids"], "owned": ["joker ids"] },
   "unlocks": ["luca_blight"],
-  "stats": { "runs": 0, "wins": 0, "bestAnte": 0, "bossesDefeated": 0, "handsPlayed": 0, "bestHand": 0 },
+  "stats": { "runs": 0, "wins": 0, "bestAnte": 0, "bossesDefeated": 0, "handsPlayed": 0, "bestHand": 0, "handPlays": { "pair": 14 } },
   "settings": { "speed": 1, "skipAnimations": false, "reducedMotion": "system", "sound": false },
-  "castle": { "renown": 0, "built": ["tavern"] }
+  "castle": { "renown": 0, "levels": { "tavern": 2, "forge": 1 } }
 }
 ```
 - `owned` = recruited at least once (counts for Riou, Bob, Mazus). `seen` = appeared in a shop or pack.
-- `castle.renown` is the meta currency; `castle.built` lists facility ids from `src/data/castle.json`. Unknown keys in `castle` are kept.
+- `castle.renown` is the meta currency; `castle.levels` maps facility ids (`src/data/castle.json`) to their built level (1 = first level). Unknown keys in `castle` are kept.
+- `stats.handPlays` counts hands played per hand type over all runs (used by Tessai's Forge).
 
-### RunState (v2)
+### RunState (v3)
 The full type is `RunState` in `src/engine/state.ts`. Main fields:
 
 | Field | Meaning |
@@ -51,7 +52,8 @@ The full type is `RunState` in `src/engine/state.ts`. Main fields:
 | `round`, `cashout`, `shop`, `pack` | Present only in their phases. |
 | `discovered`, `unlocked` | Collection copy updated during the run. |
 | `cycle` | Per-round counters (reset at blind select). |
-| `modifiers` | `RunModifiers` built at run start from the Castle (reroll discount, hand size, preview, boss look-ahead, food per blind, skip-to-shop). |
+| `modifiers` | `RunModifiers` built at run start from the Castle (see `state.ts`). |
+| `rescued` | The Squirrel Corps has saved this run. |
 | `nextHand` | `{chips, mult}` from Food, added to the next hand played. |
 | `lastScore` | The last `ScoreResult` with its `ScoreEvent` list. |
 
@@ -59,4 +61,5 @@ The full type is `RunState` in `src/engine/state.ts`. Main fields:
 - Every stored object has `schemaVersion`. `MIGRATIONS[n]` in `save.ts` turns version n into n+1. A newer version than the game is rejected.
   - 0 → 1: files without `schemaVersion` (same shape).
   - 1 → 2: profiles get `castle: {renown: 0, built: []}` (old castle keys are kept); runs get `nextHand` and the new `modifiers` fields with default values.
+  - 2 → 3: `castle.built` becomes `castle.levels` (each built facility = level 1); `stats.handPlays` is added; runs get `rescued` and the new `modifiers` fields.
 - Import validates the whole file (JSON, shape, known ids, value ranges, phase consistency) **before** anything is applied. A bad file changes nothing.

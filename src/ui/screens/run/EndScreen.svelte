@@ -22,7 +22,7 @@
     <dt>Best hand</dt><dd>{num(run.stats.bestHand)}</dd>
     <dt>Bosses defeated</dt><dd>{run.stats.bossesDefeated}</dd>
     <dt>Hands played</dt><dd>{run.stats.handsPlayed}</dd>
-    <dt>Renown</dt><dd class="renown">+{renownForRun(run)}{won ? ' (added when the run ends)' : ''}</dd>
+    <dt>Renown</dt><dd class="renown">+{renownForRun(run)}{run.modifiers.renownBonusPct ? ` (incl. +${run.modifiers.renownBonusPct}% Stage)` : ''}{won ? ' — added when the run ends' : ''}</dd>
     <dt>Last hand</dt><dd>{run.stats.lastHandType ? HAND_INFO[run.stats.lastHandType].name : '—'}</dd>
   </dl>
   <div class="buttons">

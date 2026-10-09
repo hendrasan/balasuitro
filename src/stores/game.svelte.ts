@@ -10,6 +10,7 @@ import {
   type Profile, type Settings,
 } from '../engine/save';
 import type { Passives, RunState, ScoreEvent, ScoreResult } from '../engine/state';
+import type { HandType } from '../engine/hands';
 import { sfx, type Sfx } from '../ui/sound';
 import { browserStorage } from './storage';
 
@@ -74,7 +75,7 @@ class Game {
     if (this.run && this.run.phase !== 'gameover') this.recordRun(this.run);
     const s = (seed ?? '').trim().toUpperCase() || randomSeed();
     const p = this.profile;
-    this.run = newRun(s, { owned: p.collection.owned, seen: p.collection.seen, unlocked: p.unlocks }, buildRunModifiers(p.castle));
+    this.run = newRun(s, { owned: p.collection.owned, seen: p.collection.seen, unlocked: p.unlocks }, buildRunModifiers(p.castle, p.stats.handPlays));
     this.selected = [];
     this.anim = null;
     saveRun(storage, this.run);
@@ -100,6 +101,11 @@ class Game {
     st.bossesDefeated += run.stats.bossesDefeated;
     st.handsPlayed += run.stats.handsPlayed;
     st.bestHand = Math.max(st.bestHand, run.stats.bestHand);
+    const plays = { ...st.handPlays };
+    for (const [h, lv] of Object.entries(run.handLevels)) {
+      if (lv.played) plays[h as HandType] = (plays[h as HandType] ?? 0) + lv.played;
+    }
+    st.handPlays = plays;
     this.setProfile({ ...this.profile, stats: st, castle: { ...this.profile.castle, renown: this.profile.castle.renown + renown } });
     if (renown > 0) this.toast(`+${renown} Renown for the Castle`, 'good');
   }

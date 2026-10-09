@@ -26,7 +26,9 @@ export function itemPrice(item: ShopItem, p: Passives): number {
 }
 
 export function packPrice(offer: PackOffer, p: Passives): number {
-  return offer.free ? 0 : discounted(CONFIG.packCost[offer.size], p);
+  if (offer.free) return 0;
+  const price = discounted(CONFIG.packCost[offer.size], p);
+  return offer.type === 'rune' ? Math.max(1, price - p.runePackDiscount) : price;
 }
 
 export function voucherPrice(p: Passives): number {
@@ -120,6 +122,8 @@ export function generateShop(run: RunState): ShopState {
   }
   const packs: (PackOffer | null)[] = [];
   for (let i = 0; i < CONFIG.shopPackSlots; i++) packs.push(rollPack(run));
+  // Jeane's Rune Shop (Castle): the first pack slot is always a Rune Pack.
+  if (run.modifiers.guaranteedRunePack && packs[0] && packs[0].type !== 'rune') packs[0] = { type: 'rune', size: packs[0].size };
   for (let i = 0; i < pend.freePacks; i++) packs.push({ type: 'rune', size: 'mega', free: true });
   if (pend.coupon) {
     for (const it of cards) if (it) it.free = true;
@@ -158,7 +162,8 @@ function rollPackCard(run: RunState): Card {
 }
 
 function rollPackCons(run: RunState, kind: ConsumableKind, taken: string[]): string {
-  if ((kind === 'rune' || kind === 'true') && next(run.rng) < CONFIG.soulChance && !taken.includes('beginning')) return 'beginning';
+  const soul = CONFIG.soulChance * (run.modifiers.soulChanceMult ?? 1);
+  if ((kind === 'rune' || kind === 'true') && next(run.rng) < soul && !taken.includes('beginning')) return 'beginning';
   return rollConsumableId(run, kind, taken);
 }
 

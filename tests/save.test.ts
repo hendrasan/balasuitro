@@ -22,7 +22,8 @@ function richProfile(): Profile {
   p.stats.runs = 3;
   p.stats.bestHand = 1234;
   p.settings.speed = 2;
-  p.castle = { renown: 12, built: ['tavern'], hq: { level: 2, rooms: ['forge', 'library'] }, note: 'future keys are kept' };
+  p.castle = { renown: 12, levels: { tavern: 2, forge: 1 }, hq: { level: 2, rooms: ['forge', 'library'] }, note: 'future keys are kept' };
+  p.stats.handPlays = { pair: 14, flush: 3 };
   return p;
 }
 
@@ -111,15 +112,25 @@ describe('migrations', () => {
   it('v1 profile gets an empty castle and keeps old castle keys', () => {
     const v1 = { ...newProfile(), schemaVersion: 1, castle: { note: 'old' } } as unknown as Record<string, unknown>;
     const m = migrate(v1) as unknown as Profile;
-    expect(m.schemaVersion).toBe(2);
-    expect(m.castle).toStrictEqual({ renown: 0, built: [], note: 'old' });
+    expect(m.schemaVersion).toBe(SCHEMA_VERSION);
+    expect(m.castle).toStrictEqual({ renown: 0, levels: {}, note: 'old' });
+  });
+  it('v2 castle "built" list becomes level 1 of each facility; stats get handPlays', () => {
+    const base = newProfile() as unknown as Record<string, unknown>;
+    const { handPlays: _hp, ...oldStats } = newProfile().stats;
+    const v2 = { ...base, schemaVersion: 2, stats: oldStats, castle: { renown: 7, built: ['tavern', 'kitchen'] } };
+    const m = migrate(v2) as unknown as Profile;
+    expect(m.castle).toStrictEqual({ renown: 7, levels: { tavern: 1, kitchen: 1 } });
+    expect(m.stats.handPlays).toStrictEqual({});
+    expect(parseImport(JSON.stringify({ schemaVersion: 2, exportedAt: 'x', profile: v2 })).ok).toBe(true);
   });
   it('v1 stored run gets the new run fields and loads', () => {
     const s = memoryStorage();
     const run = midRun() as unknown as Record<string, unknown>;
     delete run.nextHand;
     const mods = { ...(run.modifiers as Record<string, unknown>) };
-    for (const k of ['rerollMinus', 'previewCount', 'bossLookahead', 'foodPerBlind', 'skipToShop']) delete mods[k];
+    for (const k of ['rerollMinus', 'previewCount', 'bossLookahead', 'foodPerBlind', 'skipToShop', 'rescuePct', 'startHandLevels']) delete mods[k];
+    delete run.rescued;
     run.modifiers = mods;
     s.set(RUN_KEY, JSON.stringify({ schemaVersion: 1, run }));
     const loaded = loadRun(s);
@@ -127,10 +138,15 @@ describe('migrations', () => {
     expect(loaded!.nextHand).toStrictEqual({ chips: 0, mult: 0 });
     expect(loaded!.modifiers.skipToShop).toBe(false);
     expect(loaded!.modifiers.foodPerBlind).toBe(0);
+    expect(loaded!.modifiers.startHandLevels).toStrictEqual({});
+    expect(loaded!.rescued).toBe(false);
   });
-  it('rejects a castle with an unknown facility or negative renown', () => {
+  it('rejects a castle with an unknown facility, a bad level or negative renown', () => {
+    const c = richProfile();
+    c.castle.levels = { tavern: 9 };
+    expect(parseImport(JSON.stringify(buildExport(c, null))).ok).toBe(false);
     const a = richProfile();
-    a.castle.built = ['moon_base'];
+    a.castle.levels = { moon_base: 1 };
     expect(parseImport(JSON.stringify(buildExport(a, null))).ok).toBe(false);
     const b = richProfile();
     b.castle.renown = -1;

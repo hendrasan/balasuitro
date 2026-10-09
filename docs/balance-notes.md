@@ -12,6 +12,8 @@ No roster numbers were changed. These are concerns to check in playtesting.
 - **Pesmerga** caps at X3 after 3 bosses; with the multiplicative reading she is X2.25 after 2 bosses.
 - **Invented Bonds** (marked in `bonds.json`) are first guesses.
 - **Kasumi** gives her extra hand in the Unit Battle if the Duel was skipped (first round *played* in the Ante).
-- **Castle values are first guesses.** Renown (1 per round, +2 per Boss, +5 per win) means a typical early loss gives about 5-12 Renown, so the Tavern (15) comes after 1-3 runs and the Gate (30) much later. Costs are in `src/data/castle.json`.
+- **Castle values are first guesses.** Renown (1 per round, +2 per Boss, +5 per win) means a typical early loss gives about 5-12 Renown. The cheap first steps (Trading Post 10, Tavern and Forge 15) come after 1-2 runs; all levels of everything cost 905 Renown. Annallee's Stage (110 for all levels) pays for itself in about 6 runs at level 1 (about +3 Renown per typical run) and speeds up the rest. Costs are in `src/data/castle.json`.
+- **Shu's War Room (+1 Joker slot, 80)** is the strongest single upgrade. If it is too strong, raise the cost or make it need the other facilities first.
+- **Squirrel Corps level 2 (25%)** is forgiving; it is the main "safety net" for new players.
 - **Leona's Tavern +1 hand size** is a permanent Paint Brush in every run; strong for a first facility.
 - **Hai Yo's Curry (+1 hand)** is the strongest Food; with the Kitchen, a Curry can show up every blind.

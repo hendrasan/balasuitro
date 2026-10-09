@@ -95,6 +95,7 @@ export function newRun(seed: string, profile: ProfileSnapshot, modifiers: RunMod
     nextHand: { chips: 0, mult: 0 },
     investment: 0,
     permHandSize: 0,
+    rescued: false,
     stats: {
       handsPlayed: 0, discardsUsed: 0, unusedDiscards: 0, rerolls: 0, runesUsed: 0, bossesDefeated: 0,
       blindsSkipped: 0, roundsWon: 0, bestHand: 0, lastHandType: null, lastConsumable: null,
@@ -107,6 +108,10 @@ export function newRun(seed: string, profile: ProfileSnapshot, modifiers: RunMod
     log: [],
     logCount: 0,
   };
+  // Tessai's Forge (Castle): favorite hands start higher.
+  for (const [h, n] of Object.entries(modifiers.startHandLevels)) {
+    if (n && h in run.handLevels) run.handLevels[h as HandType].level += n;
+  }
   planBosses(run);
   run.anteState.spoils = rollSpoils(run);
   run.anteVoucher = rollVoucher(run);
@@ -263,8 +268,18 @@ function play(run: RunState, ids: number[]): ActionResult {
   if (won) {
     winRound(run);
   } else if (final) {
-    run.phase = 'gameover';
-    pushLog(run, 'Your army has fallen...');
+    // Mukumuku's Squirrel Corps (Castle): once per run, a close loss is turned into a pass.
+    // It cannot win the finale for you.
+    const need = run.modifiers.rescuePct;
+    const finale = !!round.bossId && BOSSES[round.bossId]?.finale;
+    if (need > 0 && !run.rescued && !finale && run.roundScore * 100 >= run.target * need) {
+      run.rescued = true;
+      pushLog(run, "Mukumuku's Squirrel Corps saved your army!");
+      winRound(run, true);
+    } else {
+      run.phase = 'gameover';
+      pushLog(run, 'Your army has fallen...');
+    }
   } else {
     if (mech === 'hook') {
       const gone = shuffle(run.rng, [...run.hand]).slice(0, 2);
@@ -302,7 +317,8 @@ function discard(run: RunState, ids: number[]): ActionResult {
   return OK;
 }
 
-function winRound(run: RunState): void {
+/** `rescued`: saved by the Squirrel Corps; no blind reward, no pay for hands, no Luca unlock. */
+function winRound(run: RunState, rescued = false): void {
   const round = run.round!;
   const isBoss = round.bossId !== null;
   const lines: { label: string; amount: number }[] = [];
@@ -310,8 +326,9 @@ function winRound(run: RunState): void {
   const p = computePassives(run);
   const interest = Math.min(p.interestCap, Math.floor(Math.max(0, run.money) / p.interestPer));
 
-  lines.push({ label: `${BLIND_NAMES[round.blindIndex]} defeated`, amount: CONFIG.blindRewards[round.blindIndex] });
-  if (round.handsLeft > 0) lines.push({ label: `Remaining hands (${round.handsLeft})`, amount: round.handsLeft * CONFIG.payoutPerHand });
+  if (rescued) lines.push({ label: 'Saved by the squirrels', amount: 0 });
+  else lines.push({ label: `${BLIND_NAMES[round.blindIndex]} defeated`, amount: CONFIG.blindRewards[round.blindIndex] });
+  if (!rescued && round.handsLeft > 0) lines.push({ label: `Remaining hands (${round.handsLeft})`, amount: round.handsLeft * CONFIG.payoutPerHand });
   if (isBoss) run.stats.bossesDefeated += 1;
   run.stats.roundsWon += 1;
   run.stats.unusedDiscards += round.discardsLeft;
@@ -335,7 +352,7 @@ function winRound(run: RunState): void {
       lines.push({ label: 'War Bonds', amount: run.investment });
       run.investment = 0;
     }
-    if (round.bossId === 'luca_blight' && !run.unlocked.includes('luca_blight')) {
+    if (!rescued && round.bossId === 'luca_blight' && !run.unlocked.includes('luca_blight')) {
       run.unlocked.push('luca_blight');
       pushLog(run, 'Luca Blight is defeated! He can now be recruited with the Rune of Beginning.');
     }
@@ -425,7 +442,7 @@ function doRerollBoss(run: RunState): ActionResult {
 
 function teleport(run: RunState): ActionResult {
   if (run.phase !== 'blind') return fail('Not at blind select');
-  if (!run.jokers.some((j) => j.id === 'viki')) return fail('Viki is not in your army');
+  if (!run.jokers.some((j) => j.id === 'viki') && !run.modifiers.teleport) return fail('Viki is not in your army');
   if (run.anteState.vikiUsed) return fail('Viki already teleported this Ante');
   if (!run.lastShop) return fail('No previous shop');
   run.anteState.vikiUsed = true;

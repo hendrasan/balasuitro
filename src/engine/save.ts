@@ -2,11 +2,11 @@
 import { ENHANCEMENTS, SEALS, SUITS } from './cards';
 import { CONSUMABLES } from './consumables';
 import { BOSSES, JOKERS } from './data';
-import { HAND_ORDER } from './hands';
+import { HAND_ORDER, type HandType } from './hands';
 import { type CastleState, FACILITIES, newCastle } from './castle';
 import { defaultModifiers, type RunState } from './state';
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 export const PROFILE_KEY = 'sod.profile';
 export const RUN_KEY = 'sod.run';
 
@@ -41,6 +41,8 @@ export interface LifetimeStats {
   bossesDefeated: number;
   handsPlayed: number;
   bestHand: number;
+  /** Lifetime plays per hand type (Tessai's Forge). */
+  handPlays: Partial<Record<HandType, number>>;
 }
 
 export interface Profile {
@@ -70,7 +72,7 @@ export function newProfile(): Profile {
     schemaVersion: SCHEMA_VERSION,
     collection: { seen: [], owned: [] },
     unlocks: [],
-    stats: { runs: 0, wins: 0, bestAnte: 0, bossesDefeated: 0, handsPlayed: 0, bestHand: 0 },
+    stats: { runs: 0, wins: 0, bestAnte: 0, bossesDefeated: 0, handsPlayed: 0, bestHand: 0, handPlays: {} },
     settings: { speed: 1, skipAnimations: false, reducedMotion: 'system', sound: false },
     castle: newCastle(),
   };
@@ -87,16 +89,32 @@ export const MIGRATIONS: Record<number, (o: Json) => Json> = {
   // v2 adds the Castle (renown, built) and run fields for Castle modifiers and Food.
   1: (o) => {
     const out: Json = { ...o, schemaVersion: 2 };
-    if ('collection' in o) out.castle = { ...newCastle(), ...(isObj(o.castle) ? o.castle : {}) };
-    if (isObj(o.run)) out.run = upgradeRunV2(o.run);
+    if ('collection' in o) out.castle = { renown: 0, built: [], ...(isObj(o.castle) ? o.castle : {}) };
+    if (isObj(o.run)) out.run = upgradeRun(o.run);
+    return out;
+  },
+  // v3: facility levels replace the built list; lifetime plays per hand; Squirrel rescue flag.
+  2: (o) => {
+    const out: Json = { ...o, schemaVersion: 3 };
+    if ('collection' in o) {
+      const old = isObj(o.castle) ? o.castle : {};
+      const { built, ...rest } = old;
+      const levels: Record<string, number> = isObj(old.levels) ? (old.levels as Record<string, number>) : {};
+      for (const id of isStrArr(built) ? built : []) levels[id] = Math.max(levels[id] ?? 0, 1);
+      out.castle = { ...newCastle(), ...rest, levels };
+      if (isObj(o.stats)) out.stats = { handPlays: {}, ...o.stats };
+    }
+    if (isObj(o.run)) out.run = upgradeRun(o.run);
     return out;
   },
 };
 
-function upgradeRunV2(r: Json): Json {
+/** Fill run fields added after v1 with their defaults. Safe to run more than once. */
+function upgradeRun(r: Json): Json {
   return {
     ...r,
     nextHand: isObj(r.nextHand) ? r.nextHand : { chips: 0, mult: 0 },
+    rescued: typeof r.rescued === 'boolean' ? r.rescued : false,
     modifiers: { ...defaultModifiers(), ...(isObj(r.modifiers) ? r.modifiers : {}) },
   };
 }
@@ -135,6 +153,11 @@ export function validateProfile(p: unknown): string[] {
   const st = p.stats;
   if (!isObj(st) || !['runs', 'wins', 'bestAnte', 'bossesDefeated', 'handsPlayed', 'bestHand'].every((k) => isNum(st[k]) && (st[k] as number) >= 0)) {
     e.push('profile.stats is invalid');
+  } else {
+    const hp = st.handPlays;
+    if (!isObj(hp) || !Object.entries(hp).every(([k, v]) => HAND_ORDER.includes(k as HandType) && isNum(v) && v >= 0)) {
+      e.push('profile.stats.handPlays is invalid');
+    }
   }
   const se = p.settings;
   if (!isObj(se) || !isNum(se.speed) || typeof se.skipAnimations !== 'boolean' || typeof se.sound !== 'boolean' || !['system', 'on', 'off'].includes(se.reducedMotion as string)) {
@@ -142,7 +165,10 @@ export function validateProfile(p: unknown): string[] {
   }
   const ca = p.castle;
   if (!isObj(ca)) e.push('profile.castle must be an object');
-  else if (!isNum(ca.renown) || ca.renown < 0 || !isStrArr(ca.built) || ca.built.some((id) => !FACILITIES[id])) {
+  else if (
+    !isNum(ca.renown) || ca.renown < 0 || !isObj(ca.levels) ||
+    !Object.entries(ca.levels).every(([id, n]) => !!FACILITIES[id] && isInt(n) && n >= 1 && n <= FACILITIES[id].levels.length)
+  ) {
     e.push('profile.castle is invalid');
   }
   return e;

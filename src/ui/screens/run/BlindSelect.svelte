@@ -13,7 +13,7 @@
   const p = $derived(game.passives!);
   const canReroll = $derived(p.bossRerolls > run.anteState.bossRerollsUsed && canRerollBoss(run));
   const hasViki = $derived(run.jokers.some((j) => j.id === 'viki'));
-  const canTeleport = $derived(hasViki && !run.anteState.vikiUsed && !!run.lastShop);
+  const canTeleport = $derived((hasViki || run.modifiers.teleport) && !run.anteState.vikiUsed && !!run.lastShop);
   // Richmond's Detective Agency (Castle): at the Boss blind, see the next Chapter's Boss one round early.
   const nextBoss = $derived.by(() => {
     if (p.bossLookahead < 1 || run.blindIndex !== 2) return null;
@@ -78,7 +78,7 @@
     </div>
   {/if}
   {#if canTeleport}
-    <button class="btn gold teleport" type="button" onclick={() => game.dispatch({ type: 'teleport' })}>Viki: teleport back to the shop</button>
+    <button class="btn gold teleport" type="button" onclick={() => game.dispatch({ type: 'teleport' })}>{hasViki ? 'Viki' : "Viki's Gate"}: teleport back to the shop</button>
   {/if}
 </div>
 

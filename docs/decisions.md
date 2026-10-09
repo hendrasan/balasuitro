@@ -65,14 +65,29 @@ Per-round caps (Meg, Mercenary tag, Lorelai, Mage tier 4, Gambler tier 4) reset 
 - Hover motion is gated with `@media (hover: hover) and (pointer: fine)` so touch taps do not leave cards lifted.
 
 ## Castle (meta progression)
-- Data: `src/data/castle.json`. Logic: `src/engine/castle.ts` (pure). Screen: `src/ui/screens/Castle.svelte`.
-- **Unlock + build:** a facility can be built once its character is recruited (owned at least once in the Collection). Building costs **Renown**.
+- Data: `src/data/castle.json` (facilities, levels, costs, effects). Logic: `src/engine/castle.ts` (pure). Screen: `src/ui/screens/Castle.svelte`.
+- **Unlock, build, upgrade:** a facility opens when its character is recruited (owned at least once in the Collection). Each level is bought with **Renown**. A level's effect replaces the level before it (the text of each level is the full effect).
 - **Renown** is added when a run ends (defeat, or "End run" after a win): 1 per round won, +2 per Boss defeated, +5 for beating the Ante 8 finale. Endless runs pay once, at the end.
-- **Always on:** every built facility is active in every new run. `buildRunModifiers(castle)` turns them into `RunModifiers` at run start; a run in progress is not changed by building.
-- Facilities:
-  - Leona's Tavern (15): rerolls 1 Potch cheaper, +1 hand size.
-  - Richmond's Detective Agency (20): at the Boss blind of a Chapter, the next Chapter's Boss is shown (Balatro shows it only when the Chapter starts, so this is "one round earlier"). The top 2 cards of the draw pile are shown during a round.
-  - Hai Yo's Kitchen (25): one random Food card at the start of each blind, if a consumable slot is free.
-  - Viki's Teleportation Gate (30): skipping a blind opens the shop, then play continues at the next blind. Viki is Legendary, so this is a late-game goal.
-- **Food** is a fourth consumable kind (only from the Kitchen; never in the shop or packs). It does not count as a Rune (Luc, Lorelai, Raura, Mage tag, Sierra, Clone Rune ignore it). Rice Ball / Spicy Ramen add Chips / Mult to the next hand played (shown as "Food" in the score replay). Fried Fish, Hai Yo's Curry and Dumplings work only during a battle; Dumplings draw up to the new hand size at once. Steamed Bun gives 3 Potch. Food sells for 1 Potch.
-- Save format v2 (see `save-format.md`).
+- **Always on:** the current level of every built facility applies to every new run through `buildRunModifiers(castle, handPlays)`. A run in progress does not change.
+
+| Facility | Character | Levels (cost) | Effect |
+|---|---|---|---|
+| Annallee's Stage | Annallee | 15 / 35 / 60 | +25% / +50% / +100% Renown per run (rounded up) |
+| Leona's Tavern | Leona | 15 / 30 / 60 | Rerolls -1 / -2 / -2 Potch; hand size +1 / +1 / +2 |
+| Richmond's Detective Agency | Richmond | 20 / 35 / 55 | Preview 2 / 3 / 3 cards; next Chapter's Boss at the Boss blind; L3 shows every Boss |
+| Hai Yo's Kitchen | Hai Yo | 25 / 40 / 60 | 1 / 1 / 2 Food per blind; L2+ +1 consumable slot |
+| Viki's Teleportation Gate | Viki | 30 / 50 | A skip opens the shop; L2 also allows Viki's teleport (once per Chapter) without Viki |
+| Mukumuku's Squirrel Corps | Mukumuku | 20 / 40 | Once per run, a lost battle with at least 50% / 25% of the target scored counts as passed |
+| Tessai's Forge | Tessai | 15 / 30 / 50 | Most played hand (lifetime) starts +1 / +2 / +2 levels; L3 second most played +1 |
+| Gordon's Trading Post | Gordon | 10 / 25 / 45 | +5 / +10 / +10 starting Potch; L3 10% off in the shop |
+| Jeane's Rune Shop | Jeane | 20 / 40 | First pack slot is always a Rune Pack; Rune Packs -2 Potch; L2 Rune of Beginning 3X more often |
+| Shu's War Room | Shu | 80 | +1 Joker slot |
+
+- **Annallee's Stage** speeds up the meta game. Annallee (Uncommon, easy to recruit) sings of the army, spreading its fame. The bonus is fixed in `RunModifiers.renownBonusPct` at run start, so building it during a run does not change that run's payout.
+- **Shu's War Room** holds the strongest upgrade (+1 Joker slot). Shu is the army's strategist, and he is Legendary (only from the Rune of Beginning), so the strongest upgrade is also the hardest to unlock. Jeane's level 2 helps reach him.
+- **Squirrel Corps rescue:** the blind counts as passed but pays no blind reward and no pay for remaining hands (interest and Joker money still pay). It does not unlock Luca and cannot pass the Ante 8 finale. It is used once per run (`run.rescued`).
+- **Tessai's Forge** reads `profile.stats.handPlays` (lifetime plays per hand type, added when a run ends). With no history, Pair then High Card are the favorites. Ties go to the stronger hand.
+- **Richmond "one round earlier":** Balatro shows a Boss when its Chapter starts; the Agency shows it at the Boss blind of the Chapter before.
+- **Food** is a fourth consumable kind (only from the Kitchen; never in the shop or packs). It does not count as a Rune (Luc, Lorelai, Raura, Mage tag, Sierra, Clone Rune ignore it). Rice Ball / Spicy Ramen add Chips / Mult to the next hand played. Fried Fish, Hai Yo's Curry and Dumplings work only during a battle; Dumplings draw up to the new hand size at once. Steamed Bun gives 3 Potch. Food sells for 1 Potch.
+- Save format v3 (see `save-format.md`).
+

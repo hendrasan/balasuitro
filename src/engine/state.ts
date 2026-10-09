@@ -40,6 +40,18 @@ export interface RunModifiers {
   bossLookahead: number;
   foodPerBlind: number;
   skipToShop: boolean;
+  revealBosses: boolean;
+  /** Viki-style teleport back to the last shop without owning Viki. */
+  teleport: boolean;
+  /** Squirrel Corps: 0 = none, else the % of the target needed to be saved once per run. */
+  rescuePct: number;
+  guaranteedRunePack: boolean;
+  runePackDiscount: number;
+  soulChanceMult: number;
+  /** Extra starting levels per hand type (Tessai's Forge). */
+  startHandLevels: Partial<Record<HandType, number>>;
+  /** Extra Renown from this run, in percent (Annallee's Stage). */
+  renownBonusPct: number;
 }
 
 export function defaultModifiers(): RunModifiers {
@@ -59,6 +71,14 @@ export function defaultModifiers(): RunModifiers {
     bossLookahead: 0,
     foodPerBlind: 0,
     skipToShop: false,
+    revealBosses: false,
+    teleport: false,
+    rescuePct: 0,
+    guaranteedRunePack: false,
+    runePackDiscount: 0,
+    soulChanceMult: 1,
+    startHandLevels: {},
+    renownBonusPct: 0,
   };
 }
 
@@ -72,6 +92,7 @@ export interface Passives {
   shopSlots: number;
   previewCount: number;
   bossLookahead: number;
+  runePackDiscount: number;
   shopDiscountPct: number;
   jokerPriceMinus: number;
   rerollMinus: number;
@@ -253,6 +274,8 @@ export interface RunState {
   investment: number;
   /** Permanent run changes (Bright Shield Rune: -1 hand size). */
   permHandSize: number;
+  /** Mukumuku's Squirrel Corps has saved this run. */
+  rescued: boolean;
 
   stats: RunStats;
   modifiers: RunModifiers;

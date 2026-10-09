@@ -1,13 +1,15 @@
 <script lang="ts">
   import { game } from '../../stores/game.svelte';
-  import { FACILITY_LIST, facilityStatus } from '../../engine/castle';
+  import { FACILITY_LIST, facilityLevel, facilityStatus, favoriteHands, nextLevel } from '../../engine/castle';
+  import { HAND_INFO } from '../../engine/hands';
   import { JOKERS } from '../../engine/data';
   import { portraitUrl } from '../portraits';
   import { richText } from '../format';
 
   const castle = $derived(game.profile.castle);
   const owned = $derived(game.profile.collection.owned);
-  const builtCount = $derived(castle.built.length);
+  const builtCount = $derived(Object.keys(castle.levels).length);
+  const fav = $derived(favoriteHands(game.profile.stats.handPlays).slice(0, 2).map((h) => HAND_INFO[h].name));
 </script>
 
 <div class="castle">
@@ -23,32 +25,50 @@
 
   <p class="intro muted">
     Recruit a Star to open their facility, then build it with Renown. Renown comes from every run: 1 per battle won,
-    +2 per Boss, +5 for winning the war. Built facilities help in every run. ({builtCount}/{FACILITY_LIST.length} built)
+    +2 per Boss, +5 for winning the war (Annallee's Stage adds more). Built facilities help in every run. ({builtCount}/{FACILITY_LIST.length} built)
   </p>
 
   <div class="grid">
     {#each FACILITY_LIST as f, i (f.id)}
       {@const st = facilityStatus(castle, owned, f.id)}
+      {@const lvl = facilityLevel(castle, f.id)}
+      {@const nxt = nextLevel(castle, f.id)}
+      {@const cur = lvl > 0 ? f.levels[lvl - 1] : null}
       {@const who = JOKERS[f.character]}
       {@const img = portraitUrl(f.character)}
       <article class="panel fac s-{st}" style="--i:{i}">
         <div class="art" class:dim={st === 'locked'}>
           {#if img}<img src={img} alt="" />{/if}
-          {#if st === 'built'}<span class="seal" aria-hidden="true">✦</span>{/if}
+          {#if lvl > 0}{#key lvl}<span class="seal" aria-hidden="true">{lvl}</span>{/key}{/if}
         </div>
         <div class="body">
-          <h2 class="display">{f.name}</h2>
-          <p class="text">{@html richText(f.text)}</p>
+          <div class="title">
+            <h2 class="display">{f.name}</h2>
+            <span class="pips" aria-label="Level {lvl} of {f.levels.length}">
+              {#each f.levels as _, k (k)}<i class:on={k < lvl}></i>{/each}
+            </span>
+          </div>
+          {#if cur}
+            <p class="text"><span class="tagline">Now</span> {@html richText(cur.text)}</p>
+          {/if}
+          {#if nxt}
+            <p class="text next" class:first={!cur}>
+              {#if cur}<span class="tagline">Level {lvl + 1}</span>{/if} {@html richText(nxt.text)}
+            </p>
+          {/if}
+          {#if f.id === 'forge'}
+            <p class="muted small">Your most played hands: {fav.join(', ')}</p>
+          {/if}
           <div class="foot">
-            {#if st === 'built'}
-              <span class="built">Built · active in every run</span>
+            {#if st === 'max'}
+              <span class="built">Fully built · active in every run</span>
             {:else if st === 'locked'}
               <span class="lock">🔒 Recruit {who?.name ?? f.character} to unlock</span>
-            {:else}
+            {:else if nxt}
               <button class="btn gold small" type="button" disabled={st === 'poor'} onclick={() => game.build(f.id)}>
-                Build · {f.cost} Renown
+                {lvl === 0 ? 'Build' : `Upgrade to level ${lvl + 1}`} · {nxt.cost} Renown
               </button>
-              {#if st === 'poor'}<span class="muted small">Need {f.cost - castle.renown} more</span>{/if}
+              {#if st === 'poor'}<span class="muted small">Need {nxt.cost - castle.renown} more</span>{/if}
             {/if}
           </div>
         </div>
@@ -111,7 +131,7 @@
   @keyframes rise {
     from { transform: translateY(16px); opacity: 0; }
   }
-  .fac.s-built {
+  .fac.s-max {
     border-color: var(--gold);
     box-shadow: var(--shadow), 0 0 22px rgba(227, 184, 92, 0.25);
   }
@@ -148,9 +168,42 @@
     border-radius: 50%;
     background: radial-gradient(circle at 35% 35%, #fff3cf, #c99a3f 60%, #7e5a1d);
     color: #3a2508;
-    font-size: 14px;
+    font: 700 14px var(--font-display);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
     animation: stamp 420ms var(--ease) both;
+  }
+  .title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .pips {
+    display: inline-flex;
+    gap: 4px;
+    flex: none;
+  }
+  .pips i {
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    border: 1px solid var(--gold-dim);
+    transition: background-color 300ms ease;
+  }
+  .pips i.on {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 6px rgba(227, 184, 92, 0.7);
+  }
+  .tagline {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold-dim);
+    margin-right: 4px;
+  }
+  .text.next:not(.first) {
+    color: var(--ink-dim);
   }
   @keyframes stamp {
     from { transform: scale(1.6) rotate(-20deg); opacity: 0; }

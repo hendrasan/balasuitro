@@ -23,7 +23,7 @@
 
 {#if co}
   <div class="panel cash">
-    <h2 class="display orn">Battle Won</h2>
+    <h2 class="display orn">{run.rescued && co.lines[0]?.label === 'Saved by the squirrels' ? 'Saved by the Squirrels!' : 'Battle Won'}</h2>
     <ul>
       {#each co.lines as l, i (i)}
         <li style="animation-delay:{i * 80}ms"><span>{l.label}</span><b class:neg={l.amount < 0}>{l.amount < 0 ? '' : '+'}{potch(l.amount)}</b></li>
