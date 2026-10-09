@@ -2,6 +2,7 @@
   import { game } from '../../../stores/game.svelte';
   import { HAND_INFO } from '../../../engine/hands';
   import { num } from '../../format';
+  import { renownForRun } from '../../../engine/castle';
 
   const run = $derived(game.view!);
   const won = $derived(run.phase === 'victory');
@@ -21,6 +22,7 @@
     <dt>Best hand</dt><dd>{num(run.stats.bestHand)}</dd>
     <dt>Bosses defeated</dt><dd>{run.stats.bossesDefeated}</dd>
     <dt>Hands played</dt><dd>{run.stats.handsPlayed}</dd>
+    <dt>Renown</dt><dd class="renown">+{renownForRun(run)}{won ? ' (added when the run ends)' : ''}</dd>
     <dt>Last hand</dt><dd>{run.stats.lastHandType ? HAND_INFO[run.stats.lastHandType].name : '—'}</dd>
   </dl>
   <div class="buttons">
@@ -99,6 +101,9 @@
   dd {
     margin: 0;
     font-weight: 700;
+  }
+  .renown {
+    color: var(--gold);
   }
   .mono {
     font-family: ui-monospace, monospace;

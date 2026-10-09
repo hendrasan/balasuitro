@@ -16,7 +16,8 @@
   <tbody>
     {#each antes as a (a)}
       {@const id = run.bosses[String(a)]}
-      {@const known = reveal || a <= run.ante || (id && BOSSES[id]?.fixed)}
+      {@const ahead = run.blindIndex === 2 ? (game.passives?.bossLookahead ?? 0) : 0}
+      {@const known = reveal || a <= run.ante + ahead || (id && BOSSES[id]?.fixed)}
       <tr class:now={a === run.ante}>
         <td class="ch">{a}. {chapterName(a)}</td>
         <td>

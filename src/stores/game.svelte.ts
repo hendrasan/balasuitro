@@ -1,6 +1,7 @@
 // Thin rune-based wrapper around the engine. Holds the profile, the run snapshot,
 // UI selection and the scoring animation. All rules live in src/engine.
 import { CONFIG } from '../engine/config';
+import { buildFacility, buildRunModifiers, renownForRun } from '../engine/castle';
 import { computePassives } from '../engine/passives';
 import { randomSeed } from '../engine/rng';
 import { applyAction, newRun, type Action } from '../engine/run';
@@ -8,11 +9,11 @@ import {
   buildExport, loadProfile, loadRun, mergeDiscoveries, newProfile, parseImport, saveProfile, saveRun,
   type Profile, type Settings,
 } from '../engine/save';
-import { defaultModifiers, type Passives, type RunModifiers, type RunState, type ScoreEvent, type ScoreResult } from '../engine/state';
+import type { Passives, RunState, ScoreEvent, ScoreResult } from '../engine/state';
 import { sfx, type Sfx } from '../ui/sound';
 import { browserStorage } from './storage';
 
-export type Screen = 'menu' | 'run' | 'collection' | 'settings';
+export type Screen = 'menu' | 'run' | 'collection' | 'settings' | 'castle';
 
 export interface ScoringAnim {
   result: ScoreResult;
@@ -30,11 +31,6 @@ export interface Toast {
 
 const storage = browserStorage();
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/** Build RunModifiers. Phase 2 (Castle) will fill this from profile.castle. */
-export function buildRunModifiers(_profile: Profile): RunModifiers {
-  return defaultModifiers();
-}
 
 class Game {
   profile = $state<Profile>(loadProfile(storage));
@@ -78,7 +74,7 @@ class Game {
     if (this.run && this.run.phase !== 'gameover') this.recordRun(this.run);
     const s = (seed ?? '').trim().toUpperCase() || randomSeed();
     const p = this.profile;
-    this.run = newRun(s, { owned: p.collection.owned, seen: p.collection.seen, unlocked: p.unlocks }, buildRunModifiers(p));
+    this.run = newRun(s, { owned: p.collection.owned, seen: p.collection.seen, unlocked: p.unlocks }, buildRunModifiers(p.castle));
     this.selected = [];
     this.anim = null;
     saveRun(storage, this.run);
@@ -95,14 +91,28 @@ class Game {
     this.screen = 'menu';
   }
 
+  /** Count a finished run: lifetime stats and Renown for the Castle. */
   private recordRun(run: RunState): void {
+    const renown = renownForRun(run);
     const st = { ...this.profile.stats };
     st.runs += 1;
     st.bestAnte = Math.max(st.bestAnte, run.ante);
     st.bossesDefeated += run.stats.bossesDefeated;
     st.handsPlayed += run.stats.handsPlayed;
     st.bestHand = Math.max(st.bestHand, run.stats.bestHand);
-    this.setProfile({ ...this.profile, stats: st });
+    this.setProfile({ ...this.profile, stats: st, castle: { ...this.profile.castle, renown: this.profile.castle.renown + renown } });
+    if (renown > 0) this.toast(`+${renown} Renown for the Castle`, 'good');
+  }
+
+  build(id: string): boolean {
+    const res = buildFacility(this.profile.castle, this.profile.collection.owned, id);
+    if (!res.ok) {
+      this.toast(res.error, 'error');
+      return false;
+    }
+    this.setProfile({ ...this.profile, castle: res.castle });
+    this.sound('buy');
+    return true;
   }
 
   setProfile(p: Profile): void {

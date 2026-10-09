@@ -4,6 +4,7 @@
   import RunScreen from './screens/RunScreen.svelte';
   import Collection from './screens/Collection.svelte';
   import Settings from './screens/Settings.svelte';
+  import Castle from './screens/Castle.svelte';
   import { enableSound } from './sound';
   import { fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
@@ -31,6 +32,8 @@
   <Collection />
 {:else if game.screen === 'settings'}
   <Settings />
+{:else if game.screen === 'castle'}
+  <Castle />
 {:else}
   <MainMenu />
 {/if}

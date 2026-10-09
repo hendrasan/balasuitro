@@ -118,7 +118,7 @@
     {:else if cd}
       <header>
         <h3>{cd.name}</h3>
-        <div class="sub">{cd.kind === 'true' ? 'True Rune' : cd.kind === 'forging' ? 'Forging' : 'Rune'}</div>
+        <div class="sub">{({ rune: 'Rune', forging: 'Forging', true: 'True Rune', food: "Food · Hai Yo's Kitchen" })[cd.kind]}</div>
       </header>
       <p class="text">{@html richText(cd.text)}</p>
       {#if cd.select}

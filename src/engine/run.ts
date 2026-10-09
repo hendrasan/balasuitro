@@ -92,6 +92,7 @@ export function newRun(seed: string, profile: ProfileSnapshot, modifiers: RunMod
     pack: null,
     pendingShop: { freeJokers: [], freeEditions: 0, coupon: false, freeRerolls: 0, freePacks: 0 },
     nextRound: { hands: 0, handSize: 0 },
+    nextHand: { chips: 0, mult: 0 },
     investment: 0,
     permHandSize: 0,
     stats: {
@@ -203,6 +204,8 @@ function startRound(run: RunState): void {
   if (mech === 'needle') run.round.handsLeft = 1;
   pickDebuffedJoker(run);
   run.anteState.roundsPlayed += 1;
+  // Hai Yo's Kitchen (Castle): a Food card at the start of each blind.
+  for (let i = 0; i < run.modifiers.foodPerBlind; i++) r.createConsumable('food');
   if (bossId) pushLog(run, `${BOSSES[bossId].name}: ${BOSSES[bossId].text}`);
   draw(run);
   refillOrLose(run);
@@ -240,6 +243,7 @@ function play(run: RunState, ids: number[]): ActionResult {
   run.hand = heldIds;
 
   const res = computeScore(run, played, held, { blocked });
+  run.nextHand = { chips: 0, mult: 0 };
   run.money += res.money;
   run.roundScore += res.total;
   run.stats.bestHand = Math.max(run.stats.bestHand, res.total);
@@ -399,6 +403,11 @@ function skipBlind(run: RunState): ActionResult {
   for (const ref of jokerRefs(run)) if (alive(run, ref)) BEHAVIORS[ref.data.id]?.onBlindSkipped?.(r, ref);
   run.blindIndex += 1;
   updateTarget(run);
+  // Viki's Teleportation Gate (Castle): the skip still gives a shop visit.
+  if (run.modifiers.skipToShop) {
+    pushLog(run, "Viki's Gate: teleported to the shop");
+    enterShop(run);
+  }
   return OK;
 }
 
@@ -484,7 +493,7 @@ function applyConsumable(run: RunState, def: ConsDef, targetIds: number[]): void
       if (r.createConsumable('rune', def.id)) pushLog(run, 'Mage tag: the Rune was duplicated');
     }
   }
-  if (def.kind !== 'true' && def.id !== 'clone') run.stats.lastConsumable = def.id;
+  if ((def.kind === 'rune' || def.kind === 'forging') && def.id !== 'clone') run.stats.lastConsumable = def.id;
   for (const ref of jokerRefs(run)) {
     if (alive(run, ref)) BEHAVIORS[ref.data.id]?.onConsumableUsed?.(r, ref, { uid: 0, id: def.id }, def.kind);
   }
@@ -501,6 +510,8 @@ function useConsumable(run: RunState, uid: number, targetIds: number[]): ActionR
     return fail(err);
   }
   applyConsumable(run, def, targetIds);
+  // Food can raise the hand size (Dumplings): draw up to it. Other cards keep Balatro's no-redraw rule.
+  if (def.kind === 'food' && run.phase === 'round') draw(run);
   refillOrLose(run);
   return OK;
 }

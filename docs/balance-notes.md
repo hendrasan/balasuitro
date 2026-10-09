@@ -12,3 +12,6 @@ No roster numbers were changed. These are concerns to check in playtesting.
 - **Pesmerga** caps at X3 after 3 bosses; with the multiplicative reading she is X2.25 after 2 bosses.
 - **Invented Bonds** (marked in `bonds.json`) are first guesses.
 - **Kasumi** gives her extra hand in the Unit Battle if the Duel was skipped (first round *played* in the Ante).
+- **Castle values are first guesses.** Renown (1 per round, +2 per Boss, +5 per win) means a typical early loss gives about 5-12 Renown, so the Tavern (15) comes after 1-3 runs and the Gate (30) much later. Costs are in `src/data/castle.json`.
+- **Leona's Tavern +1 hand size** is a permanent Paint Brush in every run; strong for a first facility.
+- **Hai Yo's Curry (+1 hand)** is the strongest Food; with the Kitchen, a Curry can show up every blind.

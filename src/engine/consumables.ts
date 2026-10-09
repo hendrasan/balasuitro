@@ -210,5 +210,42 @@ const TRUE_RUNES: ConsDef[] = [
   },
 ];
 
-export const CONSUMABLE_LIST: ConsDef[] = [...RUNES, ...FORGINGS, ...TRUE_RUNES];
+// Food: only from Hai Yo's Kitchen (Castle). Small one-use bonuses.
+const inRound = (r: RunCtx) => (r.run.phase === 'round' && r.run.round ? null : 'Use this during a battle');
+
+const FOODS: ConsDef[] = [
+  {
+    id: 'rice_ball', kind: 'food', name: 'Rice Ball', text: '+30 Chips on your next hand',
+    use: (r) => {
+      r.run.nextHand.chips += 30;
+    },
+  },
+  {
+    id: 'spicy_ramen', kind: 'food', name: 'Spicy Ramen', text: '+8 Mult on your next hand',
+    use: (r) => {
+      r.run.nextHand.mult += 8;
+    },
+  },
+  {
+    id: 'fried_fish', kind: 'food', name: 'Fried Fish', text: '+1 discard this round', check: inRound,
+    use: (r) => {
+      if (r.run.round) r.run.round.discardsLeft += 1;
+    },
+  },
+  {
+    id: 'curry', kind: 'food', name: "Hai Yo's Curry", text: '+1 hand this round', check: inRound,
+    use: (r) => {
+      if (r.run.round) r.run.round.handsLeft += 1;
+    },
+  },
+  {
+    id: 'dumplings', kind: 'food', name: 'Dumplings', text: '+2 hand size this round', check: inRound,
+    use: (r) => {
+      if (r.run.round) r.run.round.handSizeBonus += 2;
+    },
+  },
+  { id: 'steamed_bun', kind: 'food', name: 'Steamed Bun', text: 'Gain 3 Potch', use: (r) => r.earn(3, 'Steamed Bun') },
+];
+
+export const CONSUMABLE_LIST: ConsDef[] = [...RUNES, ...FORGINGS, ...TRUE_RUNES, ...FOODS];
 export const CONSUMABLES: Record<string, ConsDef> = Object.fromEntries(CONSUMABLE_LIST.map((c) => [c.id, c]));

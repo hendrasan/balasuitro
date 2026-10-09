@@ -22,7 +22,7 @@ function richProfile(): Profile {
   p.stats.runs = 3;
   p.stats.bestHand = 1234;
   p.settings.speed = 2;
-  p.castle = { hq: { level: 2, rooms: ['forge', 'library'] }, note: 'phase 2' };
+  p.castle = { renown: 12, built: ['tavern'], hq: { level: 2, rooms: ['forge', 'library'] }, note: 'future keys are kept' };
   return p;
 }
 
@@ -108,11 +108,39 @@ describe('export / import', () => {
 });
 
 describe('migrations', () => {
-  it('v0 (no schemaVersion) migrates to v1', () => {
+  it('v1 profile gets an empty castle and keeps old castle keys', () => {
+    const v1 = { ...newProfile(), schemaVersion: 1, castle: { note: 'old' } } as unknown as Record<string, unknown>;
+    const m = migrate(v1) as unknown as Profile;
+    expect(m.schemaVersion).toBe(2);
+    expect(m.castle).toStrictEqual({ renown: 0, built: [], note: 'old' });
+  });
+  it('v1 stored run gets the new run fields and loads', () => {
+    const s = memoryStorage();
+    const run = midRun() as unknown as Record<string, unknown>;
+    delete run.nextHand;
+    const mods = { ...(run.modifiers as Record<string, unknown>) };
+    for (const k of ['rerollMinus', 'previewCount', 'bossLookahead', 'foodPerBlind', 'skipToShop']) delete mods[k];
+    run.modifiers = mods;
+    s.set(RUN_KEY, JSON.stringify({ schemaVersion: 1, run }));
+    const loaded = loadRun(s);
+    expect(loaded).not.toBeNull();
+    expect(loaded!.nextHand).toStrictEqual({ chips: 0, mult: 0 });
+    expect(loaded!.modifiers.skipToShop).toBe(false);
+    expect(loaded!.modifiers.foodPerBlind).toBe(0);
+  });
+  it('rejects a castle with an unknown facility or negative renown', () => {
+    const a = richProfile();
+    a.castle.built = ['moon_base'];
+    expect(parseImport(JSON.stringify(buildExport(a, null))).ok).toBe(false);
+    const b = richProfile();
+    b.castle.renown = -1;
+    expect(parseImport(JSON.stringify(buildExport(b, null))).ok).toBe(false);
+  });
+  it('v0 (no schemaVersion) migrates to the current version', () => {
     const p = richProfile() as Partial<Profile>;
     delete p.schemaVersion;
     const m = migrate(p as Record<string, unknown>);
-    expect(m.schemaVersion).toBe(1);
+    expect(m.schemaVersion).toBe(SCHEMA_VERSION);
     expect(m).toStrictEqual(richProfile());
   });
   it('a v0 export file imports', () => {

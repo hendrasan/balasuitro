@@ -1,0 +1,10 @@
+[
+ {"id":"tavern","name":"Leona's Tavern","character":"leona","cost":15,
+  "text":"Rerolls cost 1 Potch less. +1 hand size.","params":{"rerollMinus":1,"handSize":1}},
+ {"id":"detective","name":"Richmond's Detective Agency","character":"richmond","cost":20,
+  "text":"See the next Chapter's Boss one round earlier. See the top 2 cards of your draw pile.","params":{"bossLookahead":1,"preview":2}},
+ {"id":"kitchen","name":"Hai Yo's Kitchen","character":"hai_yo","cost":25,
+  "text":"Get a random Food card at the start of each Blind (needs a free consumable slot).","params":{"foodPerBlind":1}},
+ {"id":"gate","name":"Viki's Teleportation Gate","character":"viki","cost":30,
+  "text":"Skipping a Blind takes you to the shop, so you do not miss a shop visit.","params":{"skipToShop":1}}
+]

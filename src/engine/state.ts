@@ -15,7 +15,7 @@ export interface JokerInstance {
   state: Record<string, number>;
 }
 
-export type ConsumableKind = 'rune' | 'forging' | 'true';
+export type ConsumableKind = 'rune' | 'forging' | 'true' | 'food';
 export interface Consumable {
   uid: number;
   id: string;
@@ -33,6 +33,13 @@ export interface RunModifiers {
   shopDiscountPct: number;
   rarityWeights: { C: number; U: number; R: number } | null;
   startingVouchers: string[];
+  // Castle facilities
+  rerollMinus: number;
+  previewCount: number;
+  /** How many Chapters ahead the Boss is shown. */
+  bossLookahead: number;
+  foodPerBlind: number;
+  skipToShop: boolean;
 }
 
 export function defaultModifiers(): RunModifiers {
@@ -47,6 +54,11 @@ export function defaultModifiers(): RunModifiers {
     shopDiscountPct: 0,
     rarityWeights: null,
     startingVouchers: [],
+    rerollMinus: 0,
+    previewCount: 0,
+    bossLookahead: 0,
+    foodPerBlind: 0,
+    skipToShop: false,
   };
 }
 
@@ -59,6 +71,7 @@ export interface Passives {
   consumableSlots: number;
   shopSlots: number;
   previewCount: number;
+  bossLookahead: number;
   shopDiscountPct: number;
   jokerPriceMinus: number;
   rerollMinus: number;
@@ -234,6 +247,8 @@ export interface RunState {
 
   /** Temporary bonuses for the next round only. */
   nextRound: { hands: number; handSize: number };
+  /** Food bonuses waiting for the next hand played. */
+  nextHand: { chips: number; mult: number };
   /** Potch paid out after the next boss (Investment spoil). */
   investment: number;
   /** Permanent run changes (Bright Shield Rune: -1 hand size). */

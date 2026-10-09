@@ -9,7 +9,9 @@
   }
   let { id, pinned = false, onclick, onhover }: Props = $props();
   const d = $derived(CONSUMABLES[id]);
-  const icon = $derived(d.kind === 'forging' ? '⚒' : d.kind === 'true' ? '✷' : '◈');
+  const ICON = { rune: '◈', forging: '⚒', true: '✷', food: '♨' };
+  const KIND = { rune: 'Rune', forging: 'Forging', true: 'True Rune', food: 'Food' };
+  const icon = $derived(ICON[d.kind]);
 </script>
 
 <button
@@ -25,7 +27,7 @@
 >
   <span class="icon">{icon}</span>
   <span class="name">{d.name}</span>
-  <span class="kind">{d.kind === 'true' ? 'True Rune' : d.kind === 'forging' ? 'Forging' : 'Rune'}</span>
+  <span class="kind">{KIND[d.kind]}</span>
 </button>
 
 <style>
@@ -56,6 +58,7 @@
   }
   .k-forging { --kc: #c9822f; }
   .k-true { --kc: #b34fd6; }
+  .k-food { --kc: #5fae5a; }
   .icon {
     font-size: calc(var(--joker-w) * 0.38);
     line-height: 1;

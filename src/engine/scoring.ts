@@ -179,6 +179,10 @@ export function computeScore(run: RunState, played: Card[], held: Card[], opts: 
   c.mult = base.mult;
   c.setSrc({ source: 'Hand' });
   c.event('base', 0, `Level ${lvl}`);
+  // Food eaten before this hand (Hai Yo's Kitchen).
+  c.setSrc({ source: 'Food' });
+  c.addChips(run.nextHand?.chips ?? 0);
+  c.addMult(run.nextHand?.mult ?? 0);
 
   const result = (blocked: boolean, destroyedIds: number[]): ScoreResult => {
     const total = blocked ? 0 : Math.floor(c.chips * c.mult);

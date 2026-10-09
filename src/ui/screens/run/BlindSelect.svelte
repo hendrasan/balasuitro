@@ -14,6 +14,12 @@
   const canReroll = $derived(p.bossRerolls > run.anteState.bossRerollsUsed && canRerollBoss(run));
   const hasViki = $derived(run.jokers.some((j) => j.id === 'viki'));
   const canTeleport = $derived(hasViki && !run.anteState.vikiUsed && !!run.lastShop);
+  // Richmond's Detective Agency (Castle): at the Boss blind, see the next Chapter's Boss one round early.
+  const nextBoss = $derived.by(() => {
+    if (p.bossLookahead < 1 || run.blindIndex !== 2) return null;
+    const id = run.bosses[String(run.ante + 1)];
+    return id ? BOSSES[id] : null;
+  });
 
   function key(e: KeyboardEvent) {
     if (e.target instanceof HTMLInputElement) return;
@@ -50,7 +56,9 @@
             <div class="spoil">
               <div class="sname">Skip for: <b>{sp.name}</b></div>
               <div class="muted">{sp.text}</div>
-              <button class="btn small" type="button" onclick={() => game.dispatch({ type: 'skipBlind' })}>Skip</button>
+              <button class="btn small" type="button" onclick={() => game.dispatch({ type: 'skipBlind' })}>
+                {run.modifiers.skipToShop ? 'Skip → shop (Viki\'s Gate)' : 'Skip'}
+              </button>
             </div>
           {:else if canReroll}
             <button class="btn small gold" type="button" onclick={() => game.dispatch({ type: 'rerollBoss' })}>Shu: change the boss</button>
@@ -63,6 +71,12 @@
       </div>
     {/each}
   </div>
+  {#if nextBoss}
+    <div class="scout panel">
+      <span class="who display">Richmond's report</span>
+      <span>Next Chapter's Boss: <b>{nextBoss.name}</b> — {nextBoss.text}</span>
+    </div>
+  {/if}
   {#if canTeleport}
     <button class="btn gold teleport" type="button" onclick={() => game.dispatch({ type: 'teleport' })}>Viki: teleport back to the shop</button>
   {/if}
@@ -178,6 +192,18 @@
   .reward {
     color: var(--money);
     font-size: 13px;
+  }
+  .scout {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    font-size: 14px;
+    max-width: 680px;
+  }
+  .who {
+    color: var(--gold);
   }
   .spoil {
     margin-top: 6px;

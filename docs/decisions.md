@@ -56,10 +56,23 @@ Per-round caps (Meg, Mercenary tag, Lorelai, Mage tier 4, Gambler tier 4) reset 
 - Portraits: source art is `docs/suiko-characters/*.png` (400x400, the art fills only the left ~350 px). `scripts/portraits.py` trims each image to its visible part, scales it to 256 px high and writes `public/portraits/<id>.webp` (Joker and boss ids) plus `src/data/portraits.json`. Cards show the art with cover-fit, anchored on the upper middle (the face). Ids not listed use a monogram, so there are no 404 requests. Beast Rune and Zombie Horde have no art yet.
 - Sound uses ZzFX, off by default, loaded only after the player turns it on.
 - After a refresh the app opens the run in progress.
-- Phase 2 hooks: `profile.castle` (round-tripped), `buildRunModifiers()` in the store, `RunModifiers` read by the engine, disabled "Castle" menu entry.
+- The Castle is built on `profile.castle` and `RunModifiers` (see "Castle" below).
 
 ## Visual style and motion
 - All motion goes through `src/ui/motion.ts` (`dur`, `scoreDur`, `play`, `wiggle`, `bump`, `shake`), so the Reduced motion setting (or the system preference) turns it off everywhere. CSS animations are also cut by the `.reduced-motion` / `.motion-system` root classes in `app.css`.
 - Curves: `--ease` = `cubic-bezier(0.23, 1, 0.32, 1)` for UI, `--ease-in-out` for on-screen movement. UI motion stays under 300 ms; the scoring replay follows the speed setting.
 - Frequent actions (selecting cards, sorting, keyboard keys) get only small, fast feedback (≤ 200 ms). Big motion is kept for rare moments: main menu, finale boss, victory.
 - Hover motion is gated with `@media (hover: hover) and (pointer: fine)` so touch taps do not leave cards lifted.
+
+## Castle (meta progression)
+- Data: `src/data/castle.json`. Logic: `src/engine/castle.ts` (pure). Screen: `src/ui/screens/Castle.svelte`.
+- **Unlock + build:** a facility can be built once its character is recruited (owned at least once in the Collection). Building costs **Renown**.
+- **Renown** is added when a run ends (defeat, or "End run" after a win): 1 per round won, +2 per Boss defeated, +5 for beating the Ante 8 finale. Endless runs pay once, at the end.
+- **Always on:** every built facility is active in every new run. `buildRunModifiers(castle)` turns them into `RunModifiers` at run start; a run in progress is not changed by building.
+- Facilities:
+  - Leona's Tavern (15): rerolls 1 Potch cheaper, +1 hand size.
+  - Richmond's Detective Agency (20): at the Boss blind of a Chapter, the next Chapter's Boss is shown (Balatro shows it only when the Chapter starts, so this is "one round earlier"). The top 2 cards of the draw pile are shown during a round.
+  - Hai Yo's Kitchen (25): one random Food card at the start of each blind, if a consumable slot is free.
+  - Viki's Teleportation Gate (30): skipping a blind opens the shop, then play continues at the next blind. Viki is Legendary, so this is a late-game goal.
+- **Food** is a fourth consumable kind (only from the Kitchen; never in the shop or packs). It does not count as a Rune (Luc, Lorelai, Raura, Mage tag, Sierra, Clone Rune ignore it). Rice Ball / Spicy Ramen add Chips / Mult to the next hand played (shown as "Food" in the score replay). Fried Fish, Hai Yo's Curry and Dumplings work only during a battle; Dumplings draw up to the new hand size at once. Steamed Bun gives 3 Potch. Food sells for 1 Potch.
+- Save format v2 (see `save-format.md`).

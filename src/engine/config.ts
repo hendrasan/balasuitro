@@ -30,7 +30,7 @@ export const CONFIG = {
   shopCardWeights: { joker: 20, rune: 4, forging: 4 },
   editionCost: { none: 0, foil: 2, holo: 3, poly: 5, negative: 5 },
   jokerEditionOdds: { foil: 0.02, holo: 0.014, poly: 0.003, negative: 0.003 },
-  consumableCost: { rune: 3, forging: 3, true: 4 },
+  consumableCost: { rune: 3, forging: 3, true: 4, food: 2 },
   packCost: { normal: 4, jumbo: 6, mega: 8 },
   voucherCost: 10,
   soulChance: 0.003, // chance a Rune / True Rune pack slot becomes the Rune of Beginning

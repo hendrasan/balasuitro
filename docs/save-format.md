@@ -5,34 +5,34 @@ All data is stored locally (`localStorage`, behind the `StorageAdapter` interfac
 | Key | Content |
 |---|---|
 | `sod.profile` | `Profile` |
-| `sod.run` | `{ "schemaVersion": 1, "run": RunState }` (absent when no run is active) |
+| `sod.run` | `{ "schemaVersion": 2, "run": RunState }` (absent when no run is active) |
 
 ## Export file
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "exportedAt": "2026-10-09T12:00:00.000Z",
   "profile": { ... },
   "run": { ... } | null
 }
 ```
 
-### Profile (v1)
+### Profile (v2)
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "collection": { "seen": ["joker ids"], "owned": ["joker ids"] },
   "unlocks": ["luca_blight"],
   "stats": { "runs": 0, "wins": 0, "bestAnte": 0, "bossesDefeated": 0, "handsPlayed": 0, "bestHand": 0 },
   "settings": { "speed": 1, "skipAnimations": false, "reducedMotion": "system", "sound": false },
-  "castle": {}
+  "castle": { "renown": 0, "built": ["tavern"] }
 }
 ```
 - `owned` = recruited at least once (counts for Riou, Bob, Mazus). `seen` = appeared in a shop or pack.
-- `castle` is reserved for Phase 2 and is kept untouched.
+- `castle.renown` is the meta currency; `castle.built` lists facility ids from `src/data/castle.json`. Unknown keys in `castle` are kept.
 
-### RunState (v1)
+### RunState (v2)
 The full type is `RunState` in `src/engine/state.ts`. Main fields:
 
 | Field | Meaning |
@@ -51,8 +51,12 @@ The full type is `RunState` in `src/engine/state.ts`. Main fields:
 | `round`, `cashout`, `shop`, `pack` | Present only in their phases. |
 | `discovered`, `unlocked` | Collection copy updated during the run. |
 | `cycle` | Per-round counters (reset at blind select). |
+| `modifiers` | `RunModifiers` built at run start from the Castle (reroll discount, hand size, preview, boss look-ahead, food per blind, skip-to-shop). |
+| `nextHand` | `{chips, mult}` from Food, added to the next hand played. |
 | `lastScore` | The last `ScoreResult` with its `ScoreEvent` list. |
 
 ## Versioning and migration
-- Every stored object has `schemaVersion`. `MIGRATIONS[n]` in `save.ts` turns version n into n+1. Version 0 (no `schemaVersion`) migrates to 1. A newer version than the game is rejected.
+- Every stored object has `schemaVersion`. `MIGRATIONS[n]` in `save.ts` turns version n into n+1. A newer version than the game is rejected.
+  - 0 → 1: files without `schemaVersion` (same shape).
+  - 1 → 2: profiles get `castle: {renown: 0, built: []}` (old castle keys are kept); runs get `nextHand` and the new `modifiers` fields with default values.
 - Import validates the whole file (JSON, shape, known ids, value ranges, phase consistency) **before** anything is applied. A bad file changes nothing.

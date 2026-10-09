@@ -3,9 +3,10 @@ import { ENHANCEMENTS, SEALS, SUITS } from './cards';
 import { CONSUMABLES } from './consumables';
 import { BOSSES, JOKERS } from './data';
 import { HAND_ORDER } from './hands';
-import type { RunState } from './state';
+import { type CastleState, FACILITIES, newCastle } from './castle';
+import { defaultModifiers, type RunState } from './state';
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 export const PROFILE_KEY = 'sod.profile';
 export const RUN_KEY = 'sod.run';
 
@@ -48,8 +49,8 @@ export interface Profile {
   unlocks: string[];
   stats: LifetimeStats;
   settings: Settings;
-  /** Reserved for Phase 2 (Castle). Round-tripped untouched. */
-  castle: Record<string, unknown>;
+  /** Castle meta progression (Renown and built facilities). Unknown keys are kept. */
+  castle: CastleState;
 }
 
 export interface StoredRun {
@@ -71,7 +72,7 @@ export function newProfile(): Profile {
     unlocks: [],
     stats: { runs: 0, wins: 0, bestAnte: 0, bossesDefeated: 0, handsPlayed: 0, bestHand: 0 },
     settings: { speed: 1, skipAnimations: false, reducedMotion: 'system', sound: false },
-    castle: {},
+    castle: newCastle(),
   };
 }
 
@@ -83,7 +84,22 @@ type Json = Record<string, unknown>;
 export const MIGRATIONS: Record<number, (o: Json) => Json> = {
   // Version 0 = pre-release files without schemaVersion. Same shape as v1.
   0: (o) => ({ ...o, schemaVersion: 1 }),
+  // v2 adds the Castle (renown, built) and run fields for Castle modifiers and Food.
+  1: (o) => {
+    const out: Json = { ...o, schemaVersion: 2 };
+    if ('collection' in o) out.castle = { ...newCastle(), ...(isObj(o.castle) ? o.castle : {}) };
+    if (isObj(o.run)) out.run = upgradeRunV2(o.run);
+    return out;
+  },
 };
+
+function upgradeRunV2(r: Json): Json {
+  return {
+    ...r,
+    nextHand: isObj(r.nextHand) ? r.nextHand : { chips: 0, mult: 0 },
+    modifiers: { ...defaultModifiers(), ...(isObj(r.modifiers) ? r.modifiers : {}) },
+  };
+}
 
 export function migrate(o: Json, target = SCHEMA_VERSION): Json {
   let cur: Json = { ...o };
@@ -124,7 +140,11 @@ export function validateProfile(p: unknown): string[] {
   if (!isObj(se) || !isNum(se.speed) || typeof se.skipAnimations !== 'boolean' || typeof se.sound !== 'boolean' || !['system', 'on', 'off'].includes(se.reducedMotion as string)) {
     e.push('profile.settings is invalid');
   }
-  if (!isObj(p.castle)) e.push('profile.castle must be an object');
+  const ca = p.castle;
+  if (!isObj(ca)) e.push('profile.castle must be an object');
+  else if (!isNum(ca.renown) || ca.renown < 0 || !isStrArr(ca.built) || ca.built.some((id) => !FACILITIES[id])) {
+    e.push('profile.castle is invalid');
+  }
   return e;
 }
 
@@ -164,7 +184,7 @@ export function validateRun(r: unknown): string[] {
     e.push('run.handLevels is invalid');
   }
   if (!isObj(r.bosses) || !Object.values(r.bosses).every((b) => typeof b === 'string' && !!BOSSES[b])) e.push('run.bosses is invalid');
-  for (const k of ['anteState', 'stats', 'modifiers', 'discovered', 'pendingShop', 'nextRound', 'cycle']) {
+  for (const k of ['anteState', 'stats', 'modifiers', 'discovered', 'pendingShop', 'nextRound', 'nextHand', 'cycle']) {
     if (!isObj(r[k])) e.push(`run.${k} is invalid`);
   }
   if (!isStrArr(r.unlocked) || !isStrArr(r.vouchers) || !isStrArr(r.log)) e.push('run lists are invalid');

@@ -43,7 +43,9 @@
     <button class="btn" type="button" onclick={() => (game.screen = 'collection')}>
       Collection <span class="muted">({p.collection.owned.length}/{JOKER_LIST.length})</span>
     </button>
-    <button class="btn" type="button" disabled title="Phase 2">Castle (coming soon)</button>
+    <button class="btn" type="button" onclick={() => (game.screen = 'castle')}>
+      Castle <span class="muted">({p.castle.renown} Renown · {p.castle.built.length} built)</span>
+    </button>
     <button class="btn" type="button" onclick={() => (game.screen = 'settings')}>Settings</button>
   </nav>
 
