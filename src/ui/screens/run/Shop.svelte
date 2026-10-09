@@ -24,7 +24,7 @@
 
 <div class="shop">
   <div class="top">
-    <h2 class="display">Merchant's Camp</h2>
+    <h2 class="display orn">Merchant's Camp</h2>
     <div class="actions">
       <button class="btn primary" type="button" onclick={() => game.dispatch({ type: 'leaveShop' })}>Next battle ▸</button>
       <button class="btn" type="button" disabled={run.money < rerollPrice(shop, p)} onclick={() => game.dispatch({ type: 'reroll' })}>
@@ -34,8 +34,8 @@
   </div>
 
   <div class="items">
-    {#each shop.cards as it, i (i)}
-      <div class="item">
+    {#each shop.cards as it, i (it ? (it.kind === 'joker' ? it.joker.uid : it.cons.uid) : `sold-${i}`)}
+      <div class="item" class:empty={!it} style="--i:{i}">
         {#if it}
           {#if it.kind === 'joker'}
             <JokerCard
@@ -66,7 +66,7 @@
 
   <div class="lower">
     <div class="voucher panel">
-      <h3 class="display">Blacksmith</h3>
+      <h3 class="display orn">Blacksmith</h3>
       {#if voucher}
         <b>{voucher.name}</b>
         <p class="muted">{voucher.text}</p>
@@ -85,6 +85,7 @@
         <div class="pack panel" class:gone={!pk}>
           {#if pk}
             {@const shape = packShape(pk.type, pk.size)}
+            <div class="sigil t-{pk.type}" aria-hidden="true">{pk.type === 'rune' ? '◈' : pk.type === 'forging' ? '⚒' : pk.type === 'true' ? '✷' : pk.type === 'star' ? '★' : '♠'}</div>
             <div class="ptype t-{pk.type} display">{pk.size === 'normal' ? '' : pk.size === 'jumbo' ? 'Jumbo ' : 'Mega '}{PACK_NAMES[pk.type]}</div>
             <div class="muted small">Choose {shape[1]} of {shape[0]}</div>
             <button class="btn small gold" type="button" disabled={run.money < packPrice(pk, p)} onclick={() => game.dispatch({ type: 'buyPack', index: i })}>
@@ -132,10 +133,25 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.25);
+    padding: 12px 10px 10px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%),
+      rgba(0, 0, 0, 0.3);
     border: 1px solid var(--line);
     border-radius: var(--radius);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    /* Cards flip onto the counter on shop entry and on reroll. */
+    animation: deal 360ms var(--ease) both;
+    animation-delay: calc(var(--i) * 70ms);
+    transform-origin: 50% 100%;
+  }
+  .item.empty {
+    animation: none;
+    box-shadow: none;
+    background: rgba(0, 0, 0, 0.15);
+  }
+  @keyframes deal {
+    from { transform: perspective(600px) rotateY(-75deg) translateY(10px); opacity: 0; }
   }
   .desc {
     font-size: 12px;
@@ -190,6 +206,28 @@
     align-items: center;
     gap: 6px;
     text-align: center;
+    background:
+      repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0 6px, transparent 6px 12px),
+      var(--panel);
+  }
+  .sigil {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 70%);
+    box-shadow: 0 0 14px color-mix(in srgb, currentColor 35%, transparent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pack:not(.gone):hover .sigil {
+      transform: rotate(-8deg) scale(1.08);
+    }
+  }
+  .sigil {
+    transition: transform 180ms var(--ease);
   }
   .pack.gone {
     opacity: 0.4;

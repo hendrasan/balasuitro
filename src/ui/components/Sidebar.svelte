@@ -8,6 +8,9 @@
   import { currentEvent } from '../anim';
   import { num, mult, potch } from '../format';
   import { portraitUrl } from '../portraits';
+  import { Tween } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
+  import { bump, shake, dur } from '../motion';
 
   interface Props {
     onmodal: (m: 'levels' | 'deck' | 'plan' | 'tags') => void;
@@ -34,6 +37,28 @@
   const total = $derived(anim && anim.step >= anim.result.events.length ? anim.result.total : null);
   const score = $derived(inRound ? run.roundScore + (total ?? 0) : 0);
   const reward = $derived(CONFIG.blindRewards[run.blindIndex]);
+
+  // Round score counts up instead of jumping.
+  const shown = new Tween(0, { duration: 600, easing: cubicOut });
+  $effect(() => {
+    shown.set(score, { duration: dur(score > shown.target ? 600 : 0) });
+  });
+  const progress = $derived(Math.min(1, run.target > 0 ? shown.current / run.target : 0));
+  // This hand will beat the blind: the hand box burns.
+  const onFire = $derived(!!anim && run.roundScore + Math.floor(box.chips * box.mult) >= run.target);
+
+  let chipsEl = $state<HTMLElement>();
+  let multEl = $state<HTMLElement>();
+  let handEl = $state<HTMLElement>();
+  $effect(() => {
+    if (!ev) return;
+    if (ev.kind === 'chips') bump(chipsEl);
+    else if (ev.kind === 'mult') bump(multEl);
+    else if (ev.kind === 'xmult') {
+      bump(multEl, 1.25);
+      if (ev.value >= 2) shake(handEl, 5);
+    }
+  });
 </script>
 
 <aside class="side panel">
@@ -51,17 +76,20 @@
 
   <div class="score">
     <span class="muted">Round score</span>
-    <b class:hit={total !== null}>{num(score)}</b>
+    <b class:hit={total !== null}>{num(Math.round(shown.current))}</b>
+    {#if inRound}
+      <span class="bar" aria-hidden="true"><i style="transform:scaleX({progress})" class:full={progress >= 1}></i></span>
+    {/if}
   </div>
 
-  <div class="hand">
+  <div class="hand" class:fire={onFire} bind:this={handEl}>
     <div class="hname">
       {box.name || ' '}{#if box.lv}<span class="lv"> lv.{box.lv}</span>{/if}
     </div>
     <div class="cm">
-      <span class="chips">{num(box.chips)}</span>
+      <span class="chips" bind:this={chipsEl}>{num(box.chips)}</span>
       <span class="x">×</span>
-      <span class="mult">{mult(box.mult)}</span>
+      <span class="mult" bind:this={multEl}>{mult(box.mult)}</span>
     </div>
     {#if total !== null}<div class="total">= {num(total)}</div>{/if}
   </div>
@@ -149,10 +177,12 @@
     color: var(--money);
   }
   .score {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 10px;
+    flex-wrap: wrap;
+    padding: 8px 10px 10px;
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.3);
     font-size: 12px;
@@ -166,11 +196,54 @@
     color: var(--gold);
     transform: scale(1.1);
   }
+  .bar {
+    flex-basis: 100%;
+    height: 5px;
+    margin-top: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  }
+  .bar i {
+    display: block;
+    height: 100%;
+    transform-origin: left;
+    background: linear-gradient(90deg, #7d1f25, #e85b4b);
+  }
+  .bar i.full {
+    background: linear-gradient(90deg, #b8861b, #f7dd97);
+    box-shadow: 0 0 8px rgba(247, 221, 151, 0.8);
+  }
   .hand {
+    position: relative;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     padding: 8px;
     text-align: center;
+    transition: box-shadow 200ms ease;
+  }
+  /* Flame glow when the hand will win the blind (only during the scoring replay). */
+  .hand.fire {
+    box-shadow: 0 0 0 1px #ffb347, 0 0 22px rgba(255, 120, 40, 0.55);
+  }
+  .hand.fire::after {
+    content: '';
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: -14px;
+    height: 22px;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 100%, #ffcf5a 0 20%, transparent 55%),
+      radial-gradient(ellipse at 50% 100%, #ff8a2a 0 25%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, #ffcf5a 0 20%, transparent 55%);
+    filter: blur(2px);
+    animation: flicker 320ms ease-in-out infinite alternate;
+  }
+  @keyframes flicker {
+    from { transform: scaleY(0.8); opacity: 0.75; }
+    to { transform: scaleY(1.15); opacity: 1; }
   }
   .hname {
     font-family: var(--font-display);
@@ -213,6 +286,10 @@
     margin-top: 6px;
     font: 800 22px var(--font-display);
     color: var(--gold);
+    animation: slam 260ms var(--ease) both;
+  }
+  @keyframes slam {
+    from { transform: scale(1.5); opacity: 0; }
   }
   .stats {
     display: grid;

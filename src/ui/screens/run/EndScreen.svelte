@@ -7,6 +7,7 @@
   const won = $derived(run.phase === 'victory');
 </script>
 
+{#if won}<div class="rays" aria-hidden="true"></div>{/if}
 <div class="end panel" class:won>
   {#if won}
     <h2 class="display">The War Is Over</h2>
@@ -37,6 +38,36 @@
     margin: 30px auto;
     padding: 22px;
     text-align: center;
+    animation: enter 420ms var(--ease) both;
+  }
+  .end:not(.won) {
+    border-color: rgba(200, 90, 100, 0.5);
+  }
+  .end:not(.won) h2 {
+    color: #d98a8a;
+  }
+  @keyframes enter {
+    from { transform: translateY(20px) scale(0.96); opacity: 0; }
+  }
+  /* Victory only: slow rays behind the panel. */
+  .rays {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: 900px;
+    height: 900px;
+    margin: -450px 0 0 -450px;
+    pointer-events: none;
+    background: repeating-conic-gradient(from 0deg, rgba(247, 221, 151, 0.12) 0 6deg, transparent 6deg 18deg);
+    -webkit-mask: radial-gradient(circle, #000 10%, transparent 60%);
+    mask: radial-gradient(circle, #000 10%, transparent 60%);
+    animation: spin 40s linear infinite, fade 800ms ease-out both;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
   }
   .end.won {
     border-color: var(--gold);
@@ -46,6 +77,14 @@
     margin: 0 0 6px;
     font-size: 30px;
     color: var(--gold);
+  }
+  .won h2 {
+    font-size: 36px;
+    background: linear-gradient(180deg, #fff3cf, #d9a640 60%, #8a5d18);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: enter 520ms var(--ease) 120ms both;
   }
   dl {
     display: grid;

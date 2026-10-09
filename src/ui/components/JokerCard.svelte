@@ -3,6 +3,7 @@
   import { JOKERS } from '../../engine/data';
   import { initials, hue } from '../format';
   import { portraitUrl } from '../portraits';
+  import { wiggle } from '../motion';
 
   interface Props {
     id: string;
@@ -15,13 +16,19 @@
     silhouette?: boolean;
     pinned?: boolean;
     badge?: string | null;
+    pulse?: number | null;
     onclick?: () => void;
     onhover?: (on: boolean) => void;
   }
   let {
     id, edition = 'none', active = false, debuffed = false, bonded = false, popup = null, popupKind = 'mult',
-    silhouette = false, pinned = false, badge = null, onclick, onhover,
+    silhouette = false, pinned = false, badge = null, pulse = null, onclick, onhover,
   }: Props = $props();
+
+  let el = $state<HTMLButtonElement>();
+  $effect(() => {
+    if (pulse != null) wiggle(el);
+  });
 
   const d = $derived(JOKERS[id]);
   const rarity = $derived(d?.rarity ?? 'C');
@@ -31,6 +38,7 @@
 </script>
 
 <button
+  bind:this={el}
   type="button"
   class="joker r-{rarity} ed-{edition}"
   class:active
@@ -54,12 +62,15 @@
       <span class="mono">{initials(d?.name ?? '?')}</span>
     {/if}
   </span>
+  <span class="gem" aria-hidden="true"></span>
   <span class="name">{silhouette ? '???' : d?.name}</span>
   {#if bonded}<span class="bond-mark" title="Bond active">⛓</span>{/if}
   {#if badge}<span class="badge">{badge}</span>{/if}
   {#if edition !== 'none'}<span class="sheen" aria-hidden="true"></span>{/if}
   {#if debuffed}<span class="debuff" aria-hidden="true">✕</span>{/if}
-  {#if popup}<span class="popup {popupKind}">{popup}</span>{/if}
+  {#if popup}
+    {#key pulse}<span class="popup {popupKind}">{popup}</span>{/key}
+  {/if}
 </button>
 
 <style>
@@ -72,13 +83,18 @@
     padding: 4px;
     border-radius: 9px;
     border: 2px solid var(--rc);
-    background: linear-gradient(180deg, #232c4a, #11172a);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 30%),
+      linear-gradient(180deg, color-mix(in srgb, var(--rc) 22%, #1d2440), #0d1222);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.55),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.6),
+      inset 0 0 0 2px color-mix(in srgb, var(--rc) 35%, transparent);
     display: flex;
     flex-direction: column;
     gap: 3px;
     cursor: pointer;
-    transition: transform 0.18s var(--ease), box-shadow 0.18s;
+    transition: transform 160ms var(--ease), box-shadow 160ms ease;
     touch-action: none;
     user-select: none;
   }
@@ -88,8 +104,41 @@
     --rc: var(--r-legendary);
     box-shadow: 0 0 14px rgba(233, 185, 73, 0.35), 0 4px 12px rgba(0, 0, 0, 0.55);
   }
-  .joker:hover {
-    transform: translateY(-3px);
+  @media (hover: hover) and (pointer: fine) {
+    .joker:hover {
+      transform: translateY(-4px) rotate(-1deg);
+    }
+    /* Light sweep across Legendary art on hover. */
+    .r-L:hover .art::before {
+      animation: sweep 700ms var(--ease) both;
+    }
+  }
+  .r-L .art::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 35%, rgba(255, 240, 200, 0.55) 50%, transparent 65%);
+    transform: translateX(-120%);
+  }
+  @keyframes sweep {
+    to { transform: translateX(120%); }
+  }
+  .gem {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translateX(-50%) rotate(45deg);
+    background: radial-gradient(circle at 35% 35%, #fff, var(--rc) 55%, color-mix(in srgb, var(--rc) 50%, #000));
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 6px var(--rc);
+    z-index: 3;
+  }
+  .silhouette .gem {
+    display: none;
   }
   .joker.pinned {
     box-shadow: 0 0 0 2px #fff8, 0 6px 14px rgba(0, 0, 0, 0.6);
@@ -156,14 +205,20 @@
   }
   .name {
     font: 700 calc(var(--joker-w) * 0.12) / 1.1 var(--font-display);
-    color: var(--ink);
+    color: #2a1d0c;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 1px 0;
-    background: color-mix(in srgb, var(--rc) 30%, transparent);
+    padding: 2px 2px 1px;
+    background: linear-gradient(180deg, #f3e6c4, #d8c08a);
     border-radius: 3px;
+    box-shadow: inset 0 0 0 1px rgba(120, 80, 20, 0.5);
+  }
+  .silhouette .name {
+    background: #1a1f33;
+    color: #4a5070;
+    box-shadow: none;
   }
   .bond-mark {
     position: absolute;
@@ -224,7 +279,8 @@
     color: #fff;
     white-space: nowrap;
     z-index: 5;
-    animation: pop 0.25s var(--ease);
+    pointer-events: none;
+    animation: pop 420ms var(--ease) both;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
   }
   .popup.chips { background: var(--chips); }
@@ -232,6 +288,8 @@
   .popup.money { background: #b8861b; }
   .popup.msg, .popup.retrigger, .popup.debuffed { background: #444b66; }
   @keyframes pop {
-    from { transform: translate(-50%, 60%) scale(0.6); opacity: 0; }
+    0% { transform: translate(-50%, 40%) scale(0.7); opacity: 0; }
+    40% { transform: translate(-50%, 110%) scale(1.12); opacity: 1; }
+    100% { transform: translate(-50%, 100%) scale(1); opacity: 1; }
   }
 </style>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { wiggle } from '../motion';
   import { type Card, SUIT_SYMBOLS, SUIT_NAMES, rankLabel, rankName, ENH_TEXT, EDITION_TEXT, SEAL_TEXT } from '../../engine/cards';
 
   interface Props {
@@ -9,9 +10,19 @@
     popup?: string | null;
     popupKind?: string;
     disabled?: boolean;
+    /** Changes on every scoring event that hits this card; drives the wiggle. */
+    pulse?: number | null;
     onclick?: () => void;
   }
-  let { card, selected = false, debuffed = false, active = false, popup = null, popupKind = 'chips', disabled = false, onclick }: Props = $props();
+  let {
+    card, selected = false, debuffed = false, active = false, popup = null, popupKind = 'chips', disabled = false, pulse = null, onclick,
+  }: Props = $props();
+
+  let el = $state<HTMLButtonElement>();
+  $effect(() => {
+    if (pulse != null) wiggle(el);
+  });
+  const CREST: Record<number, string> = { 11: '⚔', 12: '❀', 13: '♛', 14: '✦' };
 
   const red = $derived(card.suit === 'H' || card.suit === 'D');
   const stone = $derived(card.enh === 'stone');
@@ -31,6 +42,7 @@
 </script>
 
 <button
+  bind:this={el}
   type="button"
   class="card enh-{card.enh} ed-{card.edition}"
   class:red
@@ -46,8 +58,13 @@
   {#if stone}
     <span class="stone-mark">STONE</span>
   {:else}
+    <span class="frame" aria-hidden="true"></span>
     <span class="corner tl">{rankLabel(card.rank)}<i>{sym}</i></span>
-    <span class="pip">{sym}</span>
+    {#if card.rank >= 11}
+      <span class="pip face-pip" class:ace={card.rank === 14}><b>{CREST[card.rank]}</b>{sym}</span>
+    {:else}
+      <span class="pip">{sym}</span>
+    {/if}
     <span class="corner br">{rankLabel(card.rank)}<i>{sym}</i></span>
   {/if}
   {#if card.enh !== 'none' && !stone}<span class="badge">{card.enh}</span>{/if}
@@ -55,7 +72,9 @@
   {#if card.seal !== 'none'}<span class="seal seal-{card.seal}" aria-hidden="true"></span>{/if}
   {#if card.edition !== 'none'}<span class="sheen" aria-hidden="true"></span>{/if}
   {#if debuffed}<span class="debuff" aria-hidden="true">✕</span>{/if}
-  {#if popup}<span class="popup {popupKind}">{popup}</span>{/if}
+  {#if popup}
+    {#key pulse}<span class="popup {popupKind}">{popup}</span>{/key}
+  {/if}
 </button>
 
 <style>
@@ -67,12 +86,14 @@
     padding: 0;
     border-radius: 7px;
     border: 1px solid #b9a77a;
-    background: linear-gradient(160deg, var(--parch), var(--parch-2));
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.6), transparent 60%),
+      linear-gradient(160deg, var(--parch), var(--parch-2));
     color: var(--card-ink);
     font-family: var(--font-display);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
     cursor: pointer;
-    transition: transform 0.18s var(--ease), box-shadow 0.18s;
+    transition: transform 160ms var(--ease), box-shadow 160ms ease;
     overflow: visible;
     touch-action: none;
     user-select: none;
@@ -80,12 +101,39 @@
   .card.red {
     color: #a3242b;
   }
-  .card:hover:not(:disabled) {
-    transform: translateY(-4px);
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover:not(:disabled):not(.selected) {
+      transform: translateY(-5px);
+    }
   }
+  .frame {
+    position: absolute;
+    inset: 4px;
+    border-radius: 4px;
+    border: 1px solid currentColor;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  .pip.face-pip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-size: calc(var(--card-w) * 0.34);
+  }
+  .face-pip b {
+    font-size: calc(var(--card-w) * 0.34);
+    color: #b0812a;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .face-pip.ace b {
+    font-size: calc(var(--card-w) * 0.28);
+  }
+
   .card.selected {
     transform: translateY(-18px);
-    box-shadow: 0 0 0 2px var(--gold), 0 10px 18px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 0 2px var(--gold), 0 0 16px rgba(227, 184, 92, 0.45), 0 12px 20px rgba(0, 0, 0, 0.6);
   }
   .card.active {
     transform: translateY(-10px) scale(1.08);
@@ -218,14 +266,17 @@
     color: #fff;
     white-space: nowrap;
     z-index: 5;
-    animation: pop 0.25s var(--ease);
+    animation: pop 420ms var(--ease) both;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
   }
   .popup.chips { background: var(--chips); }
   .popup.mult, .popup.xmult { background: var(--mult); }
   .popup.money { background: #b8861b; }
   .popup.msg, .popup.retrigger, .popup.debuffed { background: #444b66; }
   @keyframes pop {
-    from { transform: translate(-50%, -60%) scale(0.6); opacity: 0; }
+    0% { transform: translate(-50%, -40%) scale(0.7); opacity: 0; }
+    40% { transform: translate(-50%, -110%) scale(1.12); opacity: 1; }
+    100% { transform: translate(-50%, -100%) scale(1); opacity: 1; }
   }
 </style>

@@ -31,7 +31,7 @@
       {@const isBoss = i === 2}
       {@const current = run.blindIndex === i}
       {@const past = run.blindIndex > i}
-      <div class="blind panel" class:current class:past class:boss={isBoss} class:finale={isBoss && boss.finale}>
+      <div class="blind panel" style="--i:{i}" class:current class:past class:boss={isBoss} class:finale={isBoss && boss.finale}>
         <div class="kind">{BLIND_NAMES[i]}</div>
         {#if isBoss && portraitUrl(bossId)}
           <img class="face" src={portraitUrl(bossId)} alt="" />
@@ -78,6 +78,7 @@
   h2 {
     margin: 4px 0 0;
     color: var(--gold);
+    text-shadow: 0 2px 12px rgba(227, 184, 92, 0.25);
   }
   .finale {
     margin: 0;
@@ -103,12 +104,19 @@
     gap: 6px;
     text-align: center;
     opacity: 0.6;
+    animation: rise 320ms var(--ease) both;
+    animation-delay: calc(var(--i) * 60ms);
+  }
+  @keyframes rise {
+    from { transform: translateY(24px); opacity: 0; }
   }
   .blind.current {
     opacity: 1;
     border-color: var(--gold);
-    transform: translateY(-4px);
+    translate: 0 -6px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(227, 184, 92, 0.4), 0 0 24px rgba(227, 184, 92, 0.18);
   }
+
   .blind.past {
     opacity: 0.35;
   }
@@ -118,6 +126,13 @@
   .blind.finale {
     background: linear-gradient(180deg, rgba(74, 29, 94, 0.95), rgba(20, 8, 28, 0.95));
     box-shadow: 0 0 24px rgba(233, 185, 73, 0.3);
+  }
+  .blind.finale.current .face {
+    animation: breathe 2.4s ease-in-out infinite alternate;
+  }
+  @keyframes breathe {
+    from { box-shadow: 0 0 10px rgba(233, 185, 73, 0.35); }
+    to { box-shadow: 0 0 28px rgba(233, 185, 73, 0.8); }
   }
   .face {
     width: 96px;

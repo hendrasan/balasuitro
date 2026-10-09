@@ -5,6 +5,9 @@
   import Collection from './screens/Collection.svelte';
   import Settings from './screens/Settings.svelte';
   import { enableSound } from './sound';
+  import { fly } from 'svelte/transition';
+  import { cubicOut } from 'svelte/easing';
+  import { dur } from './motion';
 
   const motion = $derived(game.settings.reducedMotion);
 
@@ -34,7 +37,7 @@
 
 <div class="toasts" aria-live="polite">
   {#each game.toasts as t (t.id)}
-    <div class="toast {t.kind}">{t.text}</div>
+    <div class="toast {t.kind}" in:fly={{ y: 16, duration: dur(200), easing: cubicOut }} out:fly={{ y: 16, duration: dur(160), easing: cubicOut }}>{t.text}</div>
   {/each}
 </div>
 
@@ -59,7 +62,6 @@
     border: 1px solid var(--line);
     font-size: 14px;
     box-shadow: var(--shadow);
-    animation: up 0.2s var(--ease);
     text-align: center;
   }
   .toast.error {
@@ -68,8 +70,5 @@
   }
   .toast.good {
     border-color: var(--green);
-  }
-  @keyframes up {
-    from { transform: translateY(8px); opacity: 0; }
   }
 </style>

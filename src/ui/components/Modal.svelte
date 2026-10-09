@@ -40,7 +40,7 @@
     place-items: center;
     z-index: 80;
     padding: 16px;
-    animation: fade 0.15s ease-out;
+    animation: fade 180ms ease-out;
   }
   .modal {
     width: min(560px, 100%);
@@ -48,7 +48,7 @@
     display: flex;
     flex-direction: column;
     background: rgba(14, 20, 38, 0.98);
-    animation: rise 0.2s var(--ease);
+    animation: rise 240ms var(--ease);
   }
   .modal.wide {
     width: min(900px, 100%);
@@ -82,6 +82,6 @@
     from { opacity: 0; }
   }
   @keyframes rise {
-    from { transform: translateY(12px); opacity: 0; }
+    from { transform: translateY(12px) scale(0.97); opacity: 0; }
   }
 </style>

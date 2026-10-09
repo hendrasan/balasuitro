@@ -57,3 +57,9 @@ Per-round caps (Meg, Mercenary tag, Lorelai, Mage tier 4, Gambler tier 4) reset 
 - Sound uses ZzFX, off by default, loaded only after the player turns it on.
 - After a refresh the app opens the run in progress.
 - Phase 2 hooks: `profile.castle` (round-tripped), `buildRunModifiers()` in the store, `RunModifiers` read by the engine, disabled "Castle" menu entry.
+
+## Visual style and motion
+- All motion goes through `src/ui/motion.ts` (`dur`, `scoreDur`, `play`, `wiggle`, `bump`, `shake`), so the Reduced motion setting (or the system preference) turns it off everywhere. CSS animations are also cut by the `.reduced-motion` / `.motion-system` root classes in `app.css`.
+- Curves: `--ease` = `cubic-bezier(0.23, 1, 0.32, 1)` for UI, `--ease-in-out` for on-screen movement. UI motion stays under 300 ms; the scoring replay follows the speed setting.
+- Frequent actions (selecting cards, sorting, keyboard keys) get only small, fast feedback (≤ 200 ms). Big motion is kept for rare moments: main menu, finale boss, victory.
+- Hover motion is gated with `@media (hover: hover) and (pointer: fine)` so touch taps do not leave cards lifted.

@@ -16,6 +16,9 @@
   import Shop from './run/Shop.svelte';
   import PackView from './run/PackView.svelte';
   import EndScreen from './run/EndScreen.svelte';
+  import { fly } from 'svelte/transition';
+  import { cubicOut } from 'svelte/easing';
+  import { dur } from '../motion';
 
   type ModalKind = 'levels' | 'deck' | 'plan' | 'tags';
   let modal = $state<ModalKind | null>(null);
@@ -34,6 +37,9 @@
       <div class="a-cons"><ConsumableRow /></div>
       <div class="a-tags"><TagBar onopen={() => (modal = 'tags')} /></div>
       <section class="stage a-stage" class:boss={run.round?.bossId}>
+        <div class="emblem" aria-hidden="true"></div>
+        {#key phase}
+        <div class="phase" in:fly={{ y: 14, duration: dur(240), easing: cubicOut }}>
         {#if phase === 'blind'}
           <BlindSelect />
         {:else if phase === 'round'}
@@ -47,6 +53,8 @@
         {:else}
           <EndScreen />
         {/if}
+        </div>
+        {/key}
       </section>
     </main>
   </div>
@@ -95,21 +103,55 @@
       grid-template-areas: 'jokers' 'stage' 'cons' 'tags';
     }
   }
+  /* The war table: felt, a gold inlay line and a faint rune circle. */
   .stage {
+    --felt: 46, 92, 70;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     min-height: 420px;
     padding: 14px;
     border-radius: 14px;
     background:
-      radial-gradient(ellipse at 50% 40%, rgba(46, 92, 70, 0.35), transparent 70%),
-      rgba(10, 20, 18, 0.55);
-    border: 1px solid rgba(120, 170, 130, 0.2);
-    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5);
+      radial-gradient(ellipse at 50% 35%, rgba(var(--felt), 0.5), transparent 70%),
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.04) 0 1px, transparent 1px 3px),
+      rgba(10, 22, 18, 0.75);
+    border: 1px solid rgba(227, 184, 92, 0.35);
+    box-shadow:
+      inset 0 0 0 6px rgba(0, 0, 0, 0.35),
+      inset 0 0 0 7px rgba(227, 184, 92, 0.18),
+      inset 0 0 80px rgba(0, 0, 0, 0.6);
+    transition: border-color 300ms ease;
   }
   .stage.boss {
+    --felt: 120, 32, 44;
     background:
-      radial-gradient(ellipse at 50% 40%, rgba(110, 30, 40, 0.35), transparent 70%),
-      rgba(24, 10, 12, 0.6);
-    border-color: rgba(200, 90, 100, 0.25);
+      radial-gradient(ellipse at 50% 35%, rgba(var(--felt), 0.5), transparent 70%),
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 3px),
+      rgba(26, 10, 14, 0.8);
+    border-color: rgba(220, 100, 110, 0.4);
+  }
+  .emblem {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 360px;
+    height: 360px;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.07;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, transparent 55%, #e3b85c 55.5% 56.5%, transparent 57% 63%, #e3b85c 63.5% 64%, transparent 64.5%),
+      repeating-conic-gradient(from 0deg, #e3b85c 0 2deg, transparent 2deg 30deg),
+      radial-gradient(circle, #e3b85c 0 6%, transparent 6.5%);
+    -webkit-mask: radial-gradient(circle, #000 8%, transparent 8.5% 54%, #000 54.5% 64.5%, transparent 65%);
+    mask: radial-gradient(circle, #000 8%, transparent 8.5% 54%, #000 54.5% 64.5%, transparent 65%);
+  }
+  .phase {
+    position: relative;
   }
   @media (max-width: 760px) {
     .stage {

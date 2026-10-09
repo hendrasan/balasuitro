@@ -5,6 +5,10 @@
   import { reorderable } from '../drag';
   import { currentEvent, popupText } from '../anim';
   import JokerCard from './JokerCard.svelte';
+  import { flip } from 'svelte/animate';
+  import { scale } from 'svelte/transition';
+  import { dur } from '../motion';
+  import { cubicOut } from 'svelte/easing';
 
   const run = $derived(game.view!);
   const slots = $derived(game.passives?.jokerSlots ?? 5);
@@ -21,7 +25,13 @@
   <div class="cards" use:reorderable={{ onMove: (from, to) => game.dispatch({ type: 'moveJoker', from, to }), disabled: !!game.anim }}>
     {#each run.jokers as j, i (j.uid)}
       {@const hit = ev && ev.jokerUid === j.uid && ev.cardIndex === undefined && ev.heldIndex === undefined}
-      <div class="slot" data-idx={i}>
+      <div
+        class="slot"
+        data-idx={i}
+        animate:flip={{ duration: dur(220), easing: cubicOut }}
+        in:scale={{ start: 0.85, duration: dur(240), easing: cubicOut }}
+        out:scale={{ start: 0.6, duration: dur(260), easing: cubicOut }}
+      >
         <JokerCard
           id={j.id}
           edition={j.edition}
@@ -30,6 +40,7 @@
           active={!!hit}
           popup={hit && ev ? popupText(ev) : null}
           popupKind={ev?.kind}
+          pulse={hit ? game.anim?.step : null}
           pinned={inspect.pinned?.kind === 'joker' && inspect.pinned.uid === j.uid}
           onclick={() => inspect.pin({ kind: 'joker', uid: j.uid })}
           onhover={(on) => (inspect.hover = on ? { kind: 'joker', uid: j.uid } : null)}
