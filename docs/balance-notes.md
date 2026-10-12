@@ -17,3 +17,4 @@ No roster numbers were changed. These are concerns to check in playtesting.
 - **Squirrel Corps level 2 (25%)** is forgiving; it is the main "safety net" for new players.
 - **Leona's Tavern +1 hand size** is a permanent Paint Brush in every run; strong for a first facility.
 - **Hai Yo's Curry (+1 hand)** is the strongest Food; with the Kitchen, a Curry can show up every blind.
+- **Georg Prime was buffed** (owner's decision, 2026-10-12): X4 -> X5, and the single played card is retriggered once. As X4 alone, a lone Ace scored the same as a Pair of Aces (64) and fell behind Three of a Kind and Flushes. Now a lone Ace scores 135 with no other Jokers. Watch the combos: Steel cards held, Mondo/Sasuke/Ninja/Tony retriggers and Glass all stack on the same card.

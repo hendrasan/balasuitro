@@ -198,7 +198,8 @@ const CASES: Case[] = [
   { id: 'koyu', name: '+40 Chips', played: 'KS KH', total: 140 },
   { id: 'sierra_mikain', name: 'Boss: X2', played: 'KS KH', opts: { bossId: 'yuber' }, total: 120 },
   { id: 'sierra_mikain', name: 'not Boss', played: 'KS KH', total: 60 },
-  { id: 'georg_prime', name: '1 card: X4', played: 'KS', total: 60 },
+  // King scores twice: (5 + 10 + 10) x (1 x 5) = 125
+  { id: 'georg_prime', name: '1 card: retrigger + X5', played: 'KS', total: 125 },
   { id: 'georg_prime', name: '2 cards: nothing', played: 'KS KH', total: 60 },
   // score() adds the 2 played cards to the 52-card deck: 54 cards x 4 = +216 Chips.
   { id: 'gantetsu', name: '+4 Chips per card in deck', played: 'KS KH', total: (30 + 216) * 2 },

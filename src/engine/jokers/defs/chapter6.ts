@@ -18,7 +18,11 @@ export const chapter6: BehaviorMap = {
   sierra_mikain: { onHandScored: (c, j) => c.isBoss && c.xMult(j.p.x) },
   // Double skip rewards are in run.ts skipBlind.
   jess: {},
-  georg_prime: { onHandScored: (c, j) => c.played.length === 1 && c.xMult(j.p.x) },
+  // Buffed (owner's decision): the lone card is retriggered and X5 instead of X4.
+  georg_prime: {
+    retrigger: (c, j) => (c.played.length === 1 ? j.p.retriggers : 0),
+    onHandScored: (c, j) => c.played.length === 1 && c.xMult(j.p.x),
+  },
   gantetsu: { onHandScored: (c, j) => c.addChips(j.p.chipsPerCard * c.run.deck.length) },
   boris_wizen: { onHandScored: (c, j) => c.handType === 'twopair' && c.xMult(j.p.x) },
   pico: { onHandScored: (c, j) => c.addChips(j.p.chips) },

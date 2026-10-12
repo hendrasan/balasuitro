@@ -174,7 +174,7 @@ Tag-payoff Jokers that reward owning a tag directly: Millie, Badeaux, Ayda (Beas
 | 100 | Marlowe | C | Vampire Hunter | +1 discard per Boss Blind | none |
 | 101 | Sierra Mikain | R | Mage, Vampire Hunter | X2 Mult in Boss Blinds. Runes you use are doubled | none |
 | 102 | Jess | U | Mercenary | Skipping a Blind gives double rewards | none |
-| 103 | Georg Prime | R | none | X4 Mult if exactly 1 card is played (assassin) | none |
+| 103 | Georg Prime | R | none | If exactly 1 card is played: retrigger it once and X5 Mult (assassin strikes twice) | none |
 | 104 | Gantetsu | U | Brawler | +Chips equal to 4x the number of cards in your deck | none |
 | 105 | Boris Wizen | U | none | X1.5 Mult on Two Pair | Ridley: X1.4 |
 | 106 | Pico | C | Troupe | +15 Chips | Annallee trio |

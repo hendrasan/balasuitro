@@ -1597,11 +1597,12 @@
   "rarity": "R",
   "chapter": 6,
   "tags": [],
-  "text": "X4 Mult if exactly 1 card is played (assassin)",
+  "text": "If exactly 1 card is played: retrigger it once and X5 Mult (assassin strikes twice)",
   "bondText": "",
   "cost": 8,
   "params": {
-   "x": 4
+   "x": 5,
+   "retriggers": 1
   }
  },
  {
