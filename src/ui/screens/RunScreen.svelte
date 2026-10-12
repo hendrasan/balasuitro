@@ -10,6 +10,7 @@
   import DeckView from '../components/DeckView.svelte';
   import RunPlan from '../components/RunPlan.svelte';
   import TagTable from '../components/TagTable.svelte';
+  import Guide from '../components/Guide.svelte';
   import BlindSelect from './run/BlindSelect.svelte';
   import RoundView from './run/RoundView.svelte';
   import CashOut from './run/CashOut.svelte';
@@ -20,9 +21,9 @@
   import { cubicOut } from 'svelte/easing';
   import { dur } from '../motion';
 
-  type ModalKind = 'levels' | 'deck' | 'plan' | 'tags';
+  type ModalKind = 'levels' | 'deck' | 'plan' | 'tags' | 'guide';
   let modal = $state<ModalKind | null>(null);
-  const TITLES: Record<ModalKind, string> = { levels: 'Hand Levels', deck: 'Your Deck', plan: 'Campaign', tags: 'Army Tags' };
+  const TITLES: Record<ModalKind, string> = { levels: 'Hand Levels', deck: 'Your Deck', plan: 'Campaign', tags: 'Army Tags', guide: 'Guide' };
 
   const run = $derived(game.view);
   // Keep showing the round while the scoring replay runs.
@@ -60,10 +61,11 @@
   </div>
   <InspectPanel />
   {#if modal}
-    <Modal title={TITLES[modal]} onclose={() => (modal = null)} wide={modal === 'deck' || modal === 'tags'}>
+    <Modal title={TITLES[modal]} onclose={() => (modal = null)} wide={modal === 'deck' || modal === 'tags' || modal === 'guide'}>
       {#if modal === 'levels'}<HandLevels />
       {:else if modal === 'deck'}<DeckView />
       {:else if modal === 'plan'}<RunPlan />
+      {:else if modal === 'guide'}<Guide />
       {:else}<TagTable />{/if}
     </Modal>
   {/if}

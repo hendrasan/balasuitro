@@ -23,7 +23,7 @@ export function richText(text: string): string {
     .replace(/(\+?X\s?\d+(?:\.\d+)?\s?Mult|X\d+(?:\.\d+)?)/g, '<b class="t-x">$1</b>')
     .replace(/(\+\d+(?:\.\d+)?\s?Mult)/g, '<b class="t-mult">$1</b>')
     .replace(/(\+\d+\s?Chips)/g, '<b class="t-chips">$1</b>')
-    .replace(/(\+?\d+P\b)/g, '<b class="t-money">$1</b>');
+    .replace(/(\+?\d+P\b|\+?\d+ Potch\b)/g, '<b class="t-money">$1</b>');
 }
 
 export function initials(name: string): string {

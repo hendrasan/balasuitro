@@ -13,7 +13,7 @@
   import { bump, shake, dur } from '../motion';
 
   interface Props {
-    onmodal: (m: 'levels' | 'deck' | 'plan' | 'tags') => void;
+    onmodal: (m: 'levels' | 'deck' | 'plan' | 'tags' | 'guide') => void;
   }
   let { onmodal }: Props = $props();
 
@@ -78,13 +78,13 @@
     <span class="muted">Round score</span>
     <b class:hit={total !== null}>{num(Math.round(shown.current))}</b>
     {#if inRound}
-      <span class="bar" aria-hidden="true"><i style="transform:scaleX({progress})" class:full={progress >= 1}></i></span>
+      <span class="bar" class:full={progress >= 1} aria-hidden="true"><i style="transform:scaleX({progress})"></i></span>
     {/if}
   </div>
 
   <div class="hand" class:fire={onFire} bind:this={handEl}>
     <div class="hname">
-      {box.name || ' '}{#if box.lv}<span class="lv"> lv.{box.lv}</span>{/if}
+      {box.name || ' '}{#if box.lv}<span class="lv">lv.{box.lv}</span>{/if}
     </div>
     <div class="cm">
       <span class="chips" bind:this={chipsEl}>{num(box.chips)}</span>
@@ -108,6 +108,7 @@
     <button class="btn small" type="button" onclick={() => onmodal('deck')}>Deck</button>
     <button class="btn small" type="button" onclick={() => onmodal('plan')}>Run</button>
     <button class="btn small" type="button" onclick={() => onmodal('tags')}>Tags</button>
+    <button class="btn small" type="button" onclick={() => onmodal('guide')}>Guide</button>
     <button class="btn small" type="button" onclick={() => (game.screen = 'menu')}>Menu</button>
   </div>
 </aside>
@@ -210,12 +211,18 @@
     transform-origin: left;
     background: linear-gradient(90deg, #7d1f25, #e85b4b);
   }
-  .bar i.full {
+  /* Target reached: the bar itself turns gold and glows (the glow sits on the track, so it is not clipped). */
+  .bar.full {
+    box-shadow: 0 0 10px rgba(247, 221, 151, 0.7);
+    transition: box-shadow 300ms ease;
+  }
+  .bar.full i {
     background: linear-gradient(90deg, #b8861b, #f7dd97);
-    box-shadow: 0 0 8px rgba(247, 221, 151, 0.8);
   }
   .hand {
     position: relative;
+    isolation: isolate;
+    overflow: hidden;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     padding: 8px;
@@ -226,24 +233,25 @@
   .hand.fire {
     box-shadow: 0 0 0 1px #ffb347, 0 0 22px rgba(255, 120, 40, 0.55);
   }
+  /* Flames rise from the bottom edge, inside the box and behind the numbers. */
   .hand.fire::after {
     content: '';
     position: absolute;
-    left: 8%;
-    right: 8%;
-    top: -14px;
-    height: 22px;
+    inset: auto 0 0 0;
+    height: 70%;
+    z-index: -1;
     pointer-events: none;
+    transform-origin: 50% 100%;
     background:
-      radial-gradient(ellipse at 20% 100%, #ffcf5a 0 20%, transparent 55%),
-      radial-gradient(ellipse at 50% 100%, #ff8a2a 0 25%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, #ffcf5a 0 20%, transparent 55%);
-    filter: blur(2px);
+      radial-gradient(ellipse 30% 70% at 20% 100%, rgba(255, 207, 90, 0.55), transparent 70%),
+      radial-gradient(ellipse 35% 90% at 50% 100%, rgba(255, 138, 42, 0.6), transparent 70%),
+      radial-gradient(ellipse 30% 70% at 80% 100%, rgba(255, 207, 90, 0.55), transparent 70%);
+    filter: blur(3px);
     animation: flicker 320ms ease-in-out infinite alternate;
   }
   @keyframes flicker {
-    from { transform: scaleY(0.8); opacity: 0.75; }
-    to { transform: scaleY(1.15); opacity: 1; }
+    from { transform: scaleY(0.85); opacity: 0.7; }
+    to { transform: scaleY(1.1); opacity: 1; }
   }
   .hname {
     font-family: var(--font-display);
@@ -251,6 +259,7 @@
     min-height: 1.4em;
   }
   .lv {
+    margin-left: 6px;
     color: var(--ink-dim);
     font-size: 12px;
   }

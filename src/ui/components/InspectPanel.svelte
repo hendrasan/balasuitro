@@ -3,7 +3,8 @@
   import { inspect } from '../inspect.svelte';
   import { BOND_LIST, CHAPTER_NAMES, JOKERS, TAGS } from '../../engine/data';
   import { CONSUMABLES } from '../../engine/consumables';
-  import { EDITION_TEXT } from '../../engine/cards';
+  import { EDITION_TEXT, ENH_TEXT, SEAL_TEXT, SUIT_NAMES, rankName } from '../../engine/cards';
+  import { keywordNotes } from '../glossary';
   import { activeBonds } from '../../engine/jokers/bonds';
   import { tagCounts } from '../../engine/jokers/tags';
   import { jokerStatus } from '../../engine/jokers/status';
@@ -25,6 +26,9 @@
   const cons = $derived(t?.kind === 'cons' && run ? (run.consumables.find((c) => c.uid === t.uid) ?? null) : null);
   const consId = $derived(cons ? cons.id : t?.kind === 'consData' ? t.id : null);
   const cd = $derived(consId ? CONSUMABLES[consId] : null);
+
+  const pc = $derived(t?.kind === 'card' ? t : null);
+  const notes = $derived(keywordNotes(jd?.text ?? cd?.text ?? ''));
 
   const counts = $derived(run ? tagCounts(run) : {});
   const active = $derived(new Set(run ? activeBonds(run).map((b) => b.id) : []));
@@ -54,12 +58,25 @@
   }
 </script>
 
-{#if (jd || cd) && t}
+{#if (jd || cd || pc) && t}
   <aside class="panel inspect" aria-live="polite">
     {#if inspect.pinned}
       <button class="close" type="button" aria-label="Close" onclick={() => inspect.close()}>×</button>
     {/if}
-    {#if jd}
+    {#if pc}
+      {@const c = pc.card}
+      <header>
+        <h3>{c.enh === 'stone' ? 'Stone card' : `${rankName(c.rank)} of ${SUIT_NAMES[c.suit]}`}</h3>
+        <div class="sub">Playing card</div>
+      </header>
+      <ul class="facts">
+        {#if c.enh !== 'none'}<li>{@html richText(ENH_TEXT[c.enh])}</li>{/if}
+        {#if c.edition !== 'none'}<li>{@html richText(EDITION_TEXT[c.edition])}</li>{/if}
+        {#if c.seal !== 'none'}<li>{@html richText(SEAL_TEXT[c.seal])}</li>{/if}
+        {#if c.bonusChips}<li>{@html richText(`+${c.bonusChips} Chips`)} added forever (Tuta or the Craftsman tag)</li>{/if}
+        {#if pc.debuffed}<li class="bad">Debuffed by the Boss: this card gives nothing this round (it still counts for the hand type).</li>{/if}
+      </ul>
+    {:else if jd}
       <header>
         <h3 class="r-{jd.rarity}">{jd.name}</h3>
         <div class="sub">
@@ -68,6 +85,9 @@
       </header>
       <p class="text">{@html richText(jd.text)}</p>
       {#if status}<p class="status">{status}</p>{/if}
+      {#if notes.length}
+        <ul class="notes">{#each notes as n (n)}<li>{@html richText(n)}</li>{/each}</ul>
+      {/if}
       {#if jd.tags.length}
         <div class="block">
           <h4>Tags</h4>
@@ -121,6 +141,9 @@
         <div class="sub">{({ rune: 'Rune', forging: 'Forging', true: 'True Rune', food: "Food · Hai Yo's Kitchen" })[cd.kind]}</div>
       </header>
       <p class="text">{@html richText(cd.text)}</p>
+      {#if notes.length}
+        <ul class="notes">{#each notes as n (n)}<li>{@html richText(n)}</li>{/each}</ul>
+      {/if}
       {#if cd.select}
         <p class="muted small">Select {cd.select[0] === cd.select[1] ? cd.select[0] : `${cd.select[0]}–${cd.select[1]}`} card(s) in your hand first.</p>
       {/if}
@@ -143,7 +166,7 @@
     max-height: calc(100vh - 24px);
     overflow: auto;
     padding: 14px 16px;
-    z-index: 50;
+    z-index: 90;
     background: rgba(12, 17, 32, 0.97);
   }
   @media (max-width: 760px) {
@@ -184,6 +207,26 @@
   .text {
     font-size: 15px;
     margin: 10px 0;
+  }
+  .facts {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    font-size: 14px;
+    display: grid;
+    gap: 6px;
+  }
+  .facts .bad {
+    color: #ff9a8a;
+  }
+  .notes {
+    margin: 0 0 8px;
+    padding: 8px 10px 8px 24px;
+    font-size: 12px;
+    color: var(--ink-dim);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    display: grid;
+    gap: 4px;
   }
   .status {
     font-size: 13px;

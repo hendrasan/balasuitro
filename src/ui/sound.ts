@@ -4,7 +4,7 @@ type Zzfx = (...p: (number | undefined)[]) => unknown;
 let play: Zzfx | null = null;
 let loading = false;
 
-export type Sfx = 'chips' | 'mult' | 'xmult' | 'money' | 'select' | 'play' | 'win' | 'lose' | 'buy';
+export type Sfx = 'chips' | 'mult' | 'xmult' | 'money' | 'select' | 'play' | 'win' | 'lose' | 'buy' | 'draw' | 'total' | 'bigTotal';
 
 const SOUNDS: Record<Sfx, (number | undefined)[]> = {
   chips: [0.4, 0.05, 520, , 0.01, 0.05, 1, 1.5, , , , , , , , , , 0.5],
@@ -16,6 +16,11 @@ const SOUNDS: Record<Sfx, (number | undefined)[]> = {
   win: [0.6, 0, 523, 0.05, 0.3, 0.4, 1, 1.4, , , 260, 0.1, 0.1],
   lose: [0.6, 0, 200, 0.05, 0.3, 0.5, 2, 0.8, -1, , , , 0.2],
   buy: [0.4, 0, 700, , 0.04, 0.1, 1, 1.5, , , 300, 0.04],
+  // Soft paper flick for each card drawn.
+  draw: [0.18, 0.15, 1500, , 0.005, 0.03, 4, 0.6, -40, , , , , 0.4],
+  // Hand total: a two-note chime; bigger when the hand beats the blind.
+  total: [0.5, 0, 392, 0.01, 0.12, 0.35, 0, 1.6, , , 196, 0.07, , , , , , 0.6],
+  bigTotal: [0.7, 0, 523, 0.01, 0.2, 0.5, 0, 1.6, , , 262, 0.06, 0.12, , , , , 0.7],
 };
 
 export function enableSound(): void {

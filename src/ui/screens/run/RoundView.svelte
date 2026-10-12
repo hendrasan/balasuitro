@@ -14,10 +14,12 @@
   /** Fan the hand into a gentle arc. */
   function fan(i: number, n: number): string {
     const mid = (n - 1) / 2;
-    const d = i - mid;
-    const r = Math.max(-12, Math.min(12, d * 2.2));
-    const y = Math.min(18, d * d * 1.4);
-    return `--fan-r:${r}deg;--fan-y:${y}px`;
+    // Position across the hand: -1 (left end) .. 1 (right end). The curve uses it as a whole,
+    // so the arc stays smooth for any hand size.
+    const t = mid > 0 ? (i - mid) / mid : 0;
+    const spread = Math.min(14, 2.2 * mid); // tilt of the end cards, in degrees
+    const drop = Math.min(20, 1.4 * mid * mid); // how far the end cards sit lower, in px
+    return `--fan-r:${(t * spread).toFixed(2)}deg;--fan-y:${(t * t * drop).toFixed(1)}px`;
   }
 
   const run = $derived(game.view!);
@@ -33,6 +35,14 @@
   });
   const sel = $derived(game.selected);
 
+  // A soft flick for each new card in hand, timed with the deal animation.
+  let known = new Set<number>();
+  $effect(() => {
+    const fresh = handIds.filter((id) => !known.has(id));
+    known = new Set(handIds);
+    fresh.slice(0, 10).forEach((_, i) => setTimeout(() => game.sound('draw'), dur(i * 35)));
+  });
+
   function key(e: KeyboardEvent) {
     if (e.target instanceof HTMLInputElement || e.metaKey || e.ctrlKey || e.altKey) return;
     if (document.querySelector('[role="dialog"]')) return;
@@ -40,8 +50,9 @@
       if (e.key === ' ' || e.key === 'Enter') game.skipReplay();
       return;
     }
-    const n = Number(e.key);
-    if (n >= 1 && n <= 9 && hand[n - 1]) {
+    // 1-9 select cards 1-9; 0 selects card 10.
+    const n = e.key === '0' ? 10 : Number(e.key);
+    if (n >= 1 && n <= 10 && hand[n - 1]) {
       game.toggleSelect(hand[n - 1].id);
     } else if (e.key === 'Enter' || e.key === 'p') {
       game.play();
@@ -95,7 +106,7 @@
         </div>
       </div>
     {:else}
-      <div class="hint muted">Select up to 5 cards. Keys: 1–9 select · Enter play · D discard · R/S sort</div>
+      <div class="hint muted">Select up to 5 cards. Keys: 1–9, 0 select · Enter play · D discard · R/S sort</div>
     {/if}
   </div>
 
@@ -191,13 +202,15 @@
     font-size: 13px;
     text-align: center;
   }
+  /* Each card sits in a slot that may shrink when space runs out; the card keeps its size,
+     so big hands overlap (like Balatro) instead of growing into the deck pile. */
   .hand {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    padding: 28px calc(var(--card-w) + 12px) 22px;
+    width: 100%;
+    min-width: 0;
+    padding: 28px calc(var(--card-w) + 30px) 22px;
     min-height: calc(var(--card-h) + 36px);
-    max-width: 100%;
   }
   .handrow {
     position: relative;
@@ -206,9 +219,14 @@
     justify-content: center;
   }
   .hc {
+    flex: 0 1 calc(var(--card-w) + 6px);
+    min-width: 0;
     transform: translateY(var(--fan-y, 0)) rotate(var(--fan-r, 0deg));
     transform-origin: 50% 120%;
     transition: transform 200ms var(--ease);
+  }
+  .hc:last-child {
+    flex: none;
   }
   .deck {
     position: absolute;
@@ -246,14 +264,7 @@
   }
   @media (max-width: 760px) {
     .hand {
-      gap: 0;
-      padding: 28px 4px 18px;
-    }
-    .hc {
-      margin-right: -14px;
-    }
-    .hc:last-child {
-      margin-right: 0;
+      padding: 28px 16px 18px;
     }
     .hint {
       display: none;

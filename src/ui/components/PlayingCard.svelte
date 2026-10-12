@@ -1,5 +1,6 @@
 <script lang="ts">
   import { wiggle } from '../motion';
+  import { inspect } from '../inspect.svelte';
   import { type Card, SUIT_SYMBOLS, SUIT_NAMES, rankLabel, rankName, ENH_TEXT, EDITION_TEXT, SEAL_TEXT } from '../../engine/cards';
 
   interface Props {
@@ -19,10 +20,37 @@
   }: Props = $props();
 
   let el = $state<HTMLButtonElement>();
+
+  // Details in the inspect panel: hover (mouse) or long-press (touch). Plain cards need no panel.
+  const special = $derived(card.enh !== 'none' || card.edition !== 'none' || card.seal !== 'none' || card.bonusChips > 0 || debuffed);
+  let pressTimer: ReturnType<typeof setTimeout> | null = null;
+  let longPressed = false;
+  function hover(on: boolean) {
+    if (!special) return;
+    inspect.hover = on ? { kind: 'card', card: $state.snapshot(card) as Card, debuffed } : null;
+  }
+  function down(e: PointerEvent) {
+    longPressed = false;
+    if (!special || e.pointerType === 'mouse') return;
+    pressTimer = setTimeout(() => {
+      longPressed = true;
+      inspect.pinned = { kind: 'card', card: $state.snapshot(card) as Card, debuffed };
+    }, 450);
+  }
+  function cancel() {
+    if (pressTimer) clearTimeout(pressTimer);
+    pressTimer = null;
+  }
+  function click() {
+    if (longPressed) {
+      longPressed = false;
+      return;
+    }
+    if (!disabled) onclick?.();
+  }
   $effect(() => {
     if (pulse != null) wiggle(el);
   });
-  const CREST: Record<number, string> = { 11: '⚔', 12: '❀', 13: '♛', 14: '✦' };
 
   const red = $derived(card.suit === 'H' || card.suit === 'D');
   const stone = $derived(card.enh === 'stone');
@@ -50,10 +78,17 @@
   class:active
   class:debuffed
   aria-pressed={selected}
+  class:inert={disabled}
   aria-label={label}
-  title={label}
-  {disabled}
-  onclick={() => onclick?.()}
+  aria-disabled={disabled}
+  tabindex={disabled ? -1 : 0}
+  onclick={click}
+  onpointerenter={(e) => e.pointerType === 'mouse' && hover(true)}
+  onpointerleave={() => hover(false)}
+  onpointerdown={down}
+  onpointerup={cancel}
+  onpointercancel={cancel}
+  oncontextmenu={(e) => special && e.preventDefault()}
 >
   {#if stone}
     <span class="stone-mark">STONE</span>
@@ -61,7 +96,7 @@
     <span class="frame" aria-hidden="true"></span>
     <span class="corner tl">{rankLabel(card.rank)}<i>{sym}</i></span>
     {#if card.rank >= 11}
-      <span class="pip face-pip" class:ace={card.rank === 14}><b>{CREST[card.rank]}</b>{sym}</span>
+      <span class="pip face-pip"><b>{rankLabel(card.rank)}</b>{sym}</span>
     {:else}
       <span class="pip">{sym}</span>
     {/if}
@@ -102,7 +137,7 @@
     color: #a3242b;
   }
   @media (hover: hover) and (pointer: fine) {
-    .card:hover:not(:disabled):not(.selected) {
+    .card:hover:not(.inert):not(.selected) {
       transform: translateY(-5px);
     }
   }
@@ -122,13 +157,10 @@
     line-height: 1;
     font-size: calc(var(--card-w) * 0.34);
   }
+  /* J, Q, K and A show a large rank letter above the suit. */
   .face-pip b {
-    font-size: calc(var(--card-w) * 0.34);
-    color: #b0812a;
+    font: 700 calc(var(--card-w) * 0.38) / 1 var(--font-display);
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-  }
-  .face-pip.ace b {
-    font-size: calc(var(--card-w) * 0.28);
   }
 
   .card.selected {
@@ -142,7 +174,7 @@
   .card.debuffed {
     filter: grayscale(0.8) brightness(0.7);
   }
-  .card:disabled {
+  .card.inert {
     cursor: default;
   }
   .corner {

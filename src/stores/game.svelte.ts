@@ -43,6 +43,9 @@ class Game {
   toasts = $state<Toast[]>([]);
   private skipAnim = false;
   private toastId = 0;
+  /** Sounds that wait for the scoring replay to finish (win / lose). */
+  private pendingSfx: Sfx[] = [];
+  private deferSfx = false;
 
   /** What to draw: the pre-hand snapshot during a scoring replay, else the live run. */
   view = $derived<RunState | null>(this.anim ? this.anim.prev : this.run);
@@ -143,7 +146,13 @@ class Game {
     const prev = this.run;
     this.run = next;
     this.afterChange(prev, next);
+    if (!this.deferSfx) this.flushSfx();
     return true;
+  }
+
+  private flushSfx(): void {
+    for (const s of this.pendingSfx) this.sound(s);
+    this.pendingSfx = [];
   }
 
   private afterChange(prev: RunState, next: RunState): void {
@@ -154,13 +163,13 @@ class Game {
     if (fresh > 0) for (const line of next.log.slice(-Math.min(fresh, 3))) this.toast(line);
     if (prev.phase !== 'gameover' && next.phase === 'gameover') {
       this.recordRun(next);
-      this.sound('lose');
+      this.pendingSfx.push('lose');
     }
     if (prev.phase !== 'victory' && next.phase === 'victory') {
       this.setProfile({ ...this.profile, stats: { ...this.profile.stats, wins: this.profile.stats.wins + 1 } });
-      this.sound('win');
+      this.pendingSfx.push('win');
     }
-    if (next.phase === 'cashout' && prev.phase === 'round') this.sound('win');
+    if (next.phase === 'cashout' && prev.phase === 'round') this.pendingSfx.push('win');
     // Drop selections that are no longer in hand.
     const ids = new Set(next.phase === 'pack' ? (next.pack?.hand ?? []) : next.hand);
     this.selected = this.selected.filter((id) => ids.has(id));
@@ -182,11 +191,18 @@ class Game {
   play(): void {
     if (!this.run || this.anim || this.selected.length === 0) return;
     const prev = this.run;
-    if (!this.dispatch({ type: 'play', cardIds: this.selected })) return;
+    this.deferSfx = true;
+    const ok = this.dispatch({ type: 'play', cardIds: this.selected });
+    this.deferSfx = false;
+    if (!ok) return;
     this.selected = [];
     this.sound('play');
     const result = this.run?.lastScore;
-    if (!result || this.settings.skipAnimations || this.reducedMotion()) return;
+    if (!result || this.settings.skipAnimations || this.reducedMotion()) {
+      if (result) this.sound(this.wonWith(prev, result) ? 'bigTotal' : 'total');
+      this.flushSfx();
+      return;
+    }
     void this.replay(result, prev);
   }
 
@@ -219,8 +235,15 @@ class Game {
       await sleep(this.eventDelay(e));
     }
     if (this.anim) this.anim = { ...this.anim, step: result.events.length };
+    this.sound(this.wonWith(prev, result) ? 'bigTotal' : 'total');
     if (!this.skipAnim) await sleep(900 / this.settings.speed);
     this.anim = null;
+    this.flushSfx();
+  }
+
+  /** Did this hand reach the blind target? */
+  private wonWith(prev: RunState, result: ScoreResult): boolean {
+    return prev.roundScore + result.total >= prev.target;
   }
 
   // ------------------------------------------------------------ export / import

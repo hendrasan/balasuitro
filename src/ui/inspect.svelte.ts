@@ -1,11 +1,12 @@
 // What the inspect panel shows. Hover sets `hover`; a tap pins it.
-import type { Edition } from '../engine/cards';
+import type { Card, Edition } from '../engine/cards';
 
 export type InspectTarget =
   | { kind: 'joker'; uid: number }
   | { kind: 'jokerData'; id: string; edition: Edition; where: 'shop' | 'pack' | 'collection' }
   | { kind: 'cons'; uid: number }
-  | { kind: 'consData'; id: string };
+  | { kind: 'consData'; id: string }
+  | { kind: 'card'; card: Card; debuffed?: boolean };
 
 class InspectState {
   hover = $state<InspectTarget | null>(null);

@@ -26,14 +26,14 @@ export interface Card {
 
 export const ENH_TEXT: Record<Enhancement, string> = {
   none: '',
-  bonus: 'Bonus: +30 Chips',
-  mult: 'Mult: +4 Mult',
+  bonus: 'Bonus: +30 Chips when scored',
+  mult: 'Mult: +4 Mult when scored',
   wild: 'Wild: counts as every suit',
-  glass: 'Glass: X2 Mult, 1 in 4 to break',
-  steel: 'Steel: X1.5 Mult while held in hand',
-  stone: 'Stone: +50 Chips, no rank or suit, always scores',
-  gold: 'Gold: +3 Potch if held at end of round',
-  lucky: 'Lucky: 1 in 5 for +20 Mult, 1 in 15 for +20 Potch',
+  glass: 'Glass: X2 Mult when scored; 1 in 4 chance to break (destroyed)',
+  steel: 'Steel: X1.5 Mult while this card stays in your hand (not played)',
+  stone: 'Stone: +50 Chips; no rank or suit; always scores',
+  gold: 'Gold: +3 Potch if this card is in your hand at the end of the round',
+  lucky: 'Lucky: when scored, 1 in 5 for +20 Mult and 1 in 15 for +20 Potch',
 };
 export const EDITION_TEXT: Record<Edition, string> = {
   none: '',
@@ -45,8 +45,8 @@ export const EDITION_TEXT: Record<Edition, string> = {
 export const SEAL_TEXT: Record<Seal, string> = {
   none: '',
   gold: 'Gold Seal: +3 Potch when scored',
-  red: 'Red Seal: retrigger this card',
-  blue: 'Blue Seal: creates a Forging card of the final hand if held at end of round',
+  red: 'Red Seal: this card triggers twice (scored or held)',
+  blue: 'Blue Seal: if held at the end of the round, creates a Forging card for your last hand type',
   purple: 'Purple Seal: creates a Rune when discarded',
 };
 
